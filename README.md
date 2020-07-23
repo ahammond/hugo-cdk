@@ -1,14 +1,32 @@
-# Welcome to your CDK TypeScript project!
+# Hugo CDK
 
-This is a blank project for TypeScript development with CDK.
+Connect a github repository to an AWS CodeBuild so that it does HUGO builds of that repo on every PR.
+When master is updated, have it deploy that code to an AWS static site.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Usage
+Assumes you have an AWS account with a profile configured as "personal".
+If you only have one AWS account in your life, cool.
+[Get](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-mac.html) the CLI client
+[working](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
+and then remove the `--profile personal` from all the commands below.
+Otherwise, use the appropriate profile.
+Splitting things to separate CI, Staging and Prod accounts is beyond the scope of this README.
 
-## Useful commands
+Next, edit `bin/app.ts`, and tweak the siteNames, siteDomain, and put in your own accountId and github info.
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+Go to AWS CodeBuild, create a project, link it to github using oauth.
+Click throught the process until you have the oauth link setup.
+You only need to do this one per AWS account.
+You don't need to save or even complete the resulting CodeBuild project.
+
+```bash
+# install the library dependencies
+npm install
+# compile
+npm run build
+# You only need to run this once for each account you're using CDK with.
+npx cdk --profile personal bootstrap
+# Make sure you've already pushed the github repo that contains the site.
+# Deploy all the things.
+npx cdk --profile personal deploy \*
+```
