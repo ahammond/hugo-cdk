@@ -28,6 +28,11 @@ export interface StaticSiteProps {
   readonly redirectFn: lambda.IVersion;
 }
 
+export interface IStaticSite {
+  readonly bucket: s3.IBucket;
+  readonly distribution: cloudfront.CloudFrontWebDistribution;
+}
+
 /**
  * Generate a static website distribution in AWS.
  * Includes:
@@ -38,7 +43,7 @@ export interface StaticSiteProps {
  * - basic XSS protections
  * - DNS management for the CloudFront domain
  */
-export class StaticSite extends cdk.Construct {
+export class StaticSite extends cdk.Construct implements IStaticSite {
   public readonly bucket: s3.Bucket;
   public readonly distribution: cloudfront.CloudFrontWebDistribution;
 
@@ -150,7 +155,7 @@ export class StaticSite extends cdk.Construct {
 
 export interface StaticSiteStackProps extends StaticSiteProps, cdk.StackProps {}
 
-export class StaticSiteStack extends cdk.Stack {
+export class StaticSiteStack extends cdk.Stack implements IStaticSite {
   public readonly bucket: s3.Bucket;
   public readonly distribution: cloudfront.CloudFrontWebDistribution;
 

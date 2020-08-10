@@ -4,18 +4,10 @@ import CuT = require('../lib');
 
 test('static-site basic functionality', () => {
   const app = new cdk.App();
-  const fn = new CuT.CloudfrontRedirectStack(app, 'lambda', {
-    env: {
-      account: '123412341234',
-      region: 'us-east-1',
-    },
-  });
+  const stack = new cdk.Stack(app, 'TestStack');
+  const fn = new CuT.CloudfrontRedirect(app, 'lambda');
   // WHEN
-  const stack = new CuT.StaticSiteStack(app, 'TestStack', {
-    env: {
-      account: '123412341234',
-      region: 'us-east-1',
-    },
+  new CuT.StaticSite(stack, 'TestSite', {
     siteName: 'test-name',
     siteDomain: 'example.com',
     redirectFn: fn.version,

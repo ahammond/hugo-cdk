@@ -17,7 +17,7 @@ export interface SiteBuilderProps extends cdk.StackProps {
   /**
    * Where should master builds be published?
    */
-  production: staticSite.StaticSiteStack;
+  production: staticSite.IStaticSite;
   /**
    * Where should PR builds be published?
    * @default - Do not publish PR builds, just build them.
@@ -26,11 +26,11 @@ export interface SiteBuilderProps extends cdk.StackProps {
   //staging?: staticSite.StaticSiteStack;
 }
 
-export class SiteBuilderStack extends cdk.Stack {
+export class SiteBuilder extends cdk.Construct {
   public readonly project: codebuild.Project;
 
   constructor(scope: cdk.Construct, id: string, props: SiteBuilderProps) {
-    super(scope, id, props);
+    super(scope, id);
 
     const buildSpec = {
       version: '0.2',
@@ -124,5 +124,15 @@ export class SiteBuilderStack extends cdk.Stack {
         actions: ['cloudfront:CreateInvalidation'],
       }),
     );
+  }
+}
+
+export class SiteBuilderStack extends cdk.Stack {
+  public readonly project: codebuild.Project;
+
+  constructor(scope: cdk.Construct, id: string, props: SiteBuilderProps) {
+    super(scope, id, props);
+    const p = new SiteBuilder(this, id, props);
+    this.project = p.project;
   }
 }

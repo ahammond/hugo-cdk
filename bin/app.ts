@@ -3,9 +3,6 @@ import 'source-map-support/register';
 import cdk = require('@aws-cdk/core');
 import lib = require('../lib');
 
-const blogName = 'blog';
-const domainName = 'agh1973.com';
-
 const commonProps = {
   env: {
     account: '263869919117', // ahammond's AWS account ID. Use your own.
@@ -23,17 +20,11 @@ const redirect = new lib.CloudfrontRedirectStack(app, 'RedirectLambda', {
   stackName: 'RedirectLambda', // Be super explicit with CDK about the name of this stack.
 });
 
-// Consider changing the stack names to be more elegant would make sense.
-const productionSite = new lib.StaticSiteStack(app, `${blogName}Production`, {
+// You can just add stanza after stanza to implement more sites.
+new lib.HugoSiteStack(app, 'Blog', {
   ...commonProps,
-  siteDomain: domainName,
-  siteName: blogName,
-  redirectFn: redirect.version,
-});
-
-new lib.SiteBuilderStack(app, `${blogName}Builder`, {
-  ...commonProps,
-  production: productionSite,
-  githubRepo: blogName,
+  siteDomain: 'agh1973.com',
+  siteName: 'blog',
   githubOrg: 'ahammond',
+  redirectFn: redirect.version,
 });
