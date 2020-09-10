@@ -97,30 +97,14 @@ export class SiteBuilder extends cdk.Construct {
     const cfnProject = this.project.node.defaultChild as codebuild.CfnProject;
     cfnProject.addPropertyOverride('Source.GitSubmodulesConfig.FetchSubmodules', 'True');
 
-    const bucketResources: string[] = [props.production.bucket.bucketArn, `${props.production.bucket.bucketArn}/*`];
-    // if (props.staging) {
-    //   bucketResources.push(props.staging.bucket.bucketArn, `${props.staging.bucket.bucketArn}/*`);
-    // }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    props.production.bucket.grantReadWrite(this.project.role!);
 
     this.project.addToRolePolicy(
       new iam.PolicyStatement({
-        resources: bucketResources,
-        actions: ['s3:ListBucket', 's3:GetObject', 's3:PutObject', 's3:DeleteObject'],
-      }),
-    );
-
-    const distributionResources: string[] = [
-      `arn:aws:cloudfront::${props.env?.account}:distribution/${props.production.distribution.distributionId}`,
-    ];
-    // if (props.staging) {
-    //   distributionResources.push(
-    //     `arn:aws:cloudfront::${props.env?.account}:distribution/${props.staging.distribution.distributionId}`,
-    //   );
-    // }
-
-    this.project.addToRolePolicy(
-      new iam.PolicyStatement({
-        resources: distributionResources,
+        resources: [
+          `arn:aws:cloudfront::${props.env?.account}:distribution/${props.production.distribution.distributionId}`,
+        ],
         actions: ['cloudfront:CreateInvalidation'],
       }),
     );

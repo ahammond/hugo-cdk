@@ -50,7 +50,6 @@ export class StaticSite extends cdk.Construct implements IStaticSite {
   constructor(scope: cdk.Construct, id: string, props: StaticSiteProps) {
     super(scope, id);
 
-    const xssReportingUri = `https://csp.${props.siteDomain}/v0/report`;
     const fqdn = `${props.siteName}.${props.siteDomain}`;
     const zone = route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.siteDomain });
 
@@ -126,7 +125,8 @@ export class StaticSite extends cdk.Construct implements IStaticSite {
           originHeaders: {
             'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
             'X-Frame-Options': 'SAMEORIGIN',
-            'X-XSS-Protection': `1; report=${xssReportingUri}`,
+            // 'X-XSS-Protection': `1; report=https://csp.${props.siteDomain}/v0/report`,
+            'X-XSS-Protection': '1',
           },
         },
       ],
