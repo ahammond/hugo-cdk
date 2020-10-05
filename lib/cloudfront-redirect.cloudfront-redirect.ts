@@ -1,4 +1,4 @@
-import awsLambda = require('aws-lambda');
+import * as awsLambda from 'aws-lambda';
 
 function generateRedirectResponse(value: string): awsLambda.CloudFrontRequestResult {
   return {

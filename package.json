@@ -35,6 +35,7 @@
     "@aws-cdk/aws-codebuild": "^1.66.0",
     "@aws-cdk/aws-iam": "^1.66.0",
     "@aws-cdk/aws-lambda": "^1.66.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.66.0",
     "@aws-cdk/aws-route53": "^1.66.0",
     "@aws-cdk/aws-route53-targets": "^1.66.0",
     "@aws-cdk/aws-s3": "^1.66.0",

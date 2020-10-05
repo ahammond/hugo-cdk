@@ -1,7 +1,7 @@
 import cdk = require('@aws-cdk/core');
 import iam = require('@aws-cdk/aws-iam');
 import lambda = require('@aws-cdk/aws-lambda');
-import path = require('path');
+import lambdaNodejs = require('@aws-cdk/aws-lambda-nodejs');
 
 export class CloudfrontRedirect extends cdk.Construct {
   public readonly fn: lambda.Function;
@@ -21,12 +21,16 @@ export class CloudfrontRedirect extends cdk.Construct {
       }),
     );
 
-    this.fn = new lambda.Function(this, 'RedirectLambda', {
-      functionName: 'cloudfront-redirect',
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, 'lambdas', 'cloudfront-redirect')),
+    this.fn = new lambdaNodejs.NodejsFunction(this, 'cloudfront-redirect', {
+      runtime: lambda.Runtime.NODEJS_12_X, // Default would work, but let's go with latest greatest.
       role: role,
+      parcelEnvironment: {
+        NODE_ENV: 'production',
+      },
+      externalModules: [
+        'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+      ],
+      nodeModules: ['@types/aws-lambda'],
     });
     new cdk.CfnOutput(this, 'TheRedirectLambda', { value: this.fn.functionArn });
 
