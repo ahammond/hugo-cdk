@@ -20,11 +20,20 @@ const redirect = new lib.CloudfrontRedirectStack(app, 'RedirectLambda', {
   stackName: 'RedirectLambda', // Be super explicit with CDK about the name of this stack.
 });
 
-// You can just add stanza after stanza to implement more sites.
-new lib.HugoSiteStack(app, 'Blog', {
+const siteProps = {
   ...commonProps,
-  siteDomain: 'agh1973.com',
-  siteName: 'blog',
   githubOrg: 'ahammond',
   redirectFn: redirect.version,
+  siteDomain: 'agh1973.com',
+}
+
+// You can just add stanza after stanza to implement more sites.
+new lib.HugoSiteStack(app, 'Blog', {
+  ...siteProps,
+  siteName: 'blog',
+});
+
+new lib.HugoSiteStack(app, 'Food', {
+  ...siteProps,
+  siteName: 'food',
 });
