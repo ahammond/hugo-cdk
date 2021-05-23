@@ -1,11 +1,10 @@
-import cdk = require('@aws-cdk/core');
-import codebuild = require('@aws-cdk/aws-codebuild');
-import iam = require('@aws-cdk/aws-iam');
-import staticSite = require('./static-site');
+import { aws_codebuild, aws_iam, Stack, StackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as staticSite from './static-site';
 
 const hugoDeb = 'https://github.com/gohugoio/hugo/releases/download/v0.74.2/hugo_0.74.2_Linux-64bit.deb';
 
-export interface SiteBuilderProps extends cdk.StackProps {
+export interface SiteBuilderProps extends StackProps {
   /**
    * The name of the repo (should match the name of the blog, but you do you.)
    */
@@ -26,10 +25,10 @@ export interface SiteBuilderProps extends cdk.StackProps {
   //staging?: staticSite.StaticSiteStack;
 }
 
-export class SiteBuilder extends cdk.Construct {
-  public readonly project: codebuild.Project;
+export class SiteBuilder extends Construct {
+  public readonly project: aws_codebuild.Project;
 
-  constructor(scope: cdk.Construct, id: string, props: SiteBuilderProps) {
+  constructor(scope: Construct, id: string, props: SiteBuilderProps) {
     super(scope, id);
 
     const buildSpec = {
@@ -44,8 +43,7 @@ export class SiteBuilder extends cdk.Construct {
           'runtime-versions': {
             python: 3.8,
           },
-          commands: [
-            // Install hugo
+          'commands': [ // Install hugo
             `curl -L -o hugo.deb "${hugoDeb}"`,
             'dpkg -i hugo.deb',
           ],
@@ -72,36 +70,35 @@ export class SiteBuilder extends cdk.Construct {
       },
     };
 
-    this.project = new codebuild.Project(this, 'Project', {
+    this.project = new aws_codebuild.Project(this, 'Project', {
       projectName: props.githubRepo,
-      buildSpec: codebuild.BuildSpec.fromObject(buildSpec),
-      source: codebuild.Source.gitHub({
+      buildSpec: aws_codebuild.BuildSpec.fromObject(buildSpec),
+      source: aws_codebuild.Source.gitHub({
         // Credentials from CLI, search ImportSourceCredentials at https://docs.aws.amazon.com/cdk/api/latest/docs/aws-codebuild-readme.html
         owner: props.githubOrg,
         repo: props.githubRepo,
         webhookFilters: [
           // Build all the PRs to master
-          codebuild.FilterGroup.inEventOf(
-            codebuild.EventAction.PULL_REQUEST_CREATED,
-            codebuild.EventAction.PULL_REQUEST_UPDATED,
-            codebuild.EventAction.PULL_REQUEST_REOPENED,
+          aws_codebuild.FilterGroup.inEventOf(
+            aws_codebuild.EventAction.PULL_REQUEST_CREATED,
+            aws_codebuild.EventAction.PULL_REQUEST_UPDATED,
+            aws_codebuild.EventAction.PULL_REQUEST_REOPENED,
           ).andBaseBranchIs('master'),
           // And any change to master.
-          codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs('master'),
+          aws_codebuild.FilterGroup.inEventOf(aws_codebuild.EventAction.PUSH).andBranchIs('master'),
         ],
       }),
     });
-    new cdk.CfnOutput(this, 'TheProject', { value: this.project.projectArn });
 
     // Submodules, please.
-    const cfnProject = this.project.node.defaultChild as codebuild.CfnProject;
+    const cfnProject = this.project.node.defaultChild as aws_codebuild.CfnProject;
     cfnProject.addPropertyOverride('Source.GitSubmodulesConfig.FetchSubmodules', 'True');
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     props.production.bucket.grantReadWrite(this.project.role!);
 
     this.project.addToRolePolicy(
-      new iam.PolicyStatement({
+      new aws_iam.PolicyStatement({
         resources: [
           `arn:aws:cloudfront::${props.env?.account}:distribution/${props.production.distribution.distributionId}`,
         ],
@@ -111,10 +108,10 @@ export class SiteBuilder extends cdk.Construct {
   }
 }
 
-export class SiteBuilderStack extends cdk.Stack {
-  public readonly project: codebuild.Project;
+export class SiteBuilderStack extends Stack {
+  public readonly project: aws_codebuild.Project;
 
-  constructor(scope: cdk.Construct, id: string, props: SiteBuilderProps) {
+  constructor(scope: Construct, id: string, props: SiteBuilderProps) {
     super(scope, id, props);
     const p = new SiteBuilder(this, id, props);
     this.project = p.project;

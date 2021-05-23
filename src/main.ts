@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
-import cdk = require('@aws-cdk/core');
-import lib = require('../lib');
+import { App } from 'aws-cdk-lib';
+import { CloudfrontRedirectStack, HugoSiteStack } from '.';
 
 const commonProps = {
   env: {
@@ -10,12 +10,12 @@ const commonProps = {
   },
 };
 
-const app = new cdk.App();
+const app = new App();
 
 // Do not change this at all, even if you have multiple sites in the same account.
 // We intentionally want to reuse this lambda for all of them...
 // Unless you have billing concerns, but that's better solved by using separate AWS accounts.
-const redirect = new lib.CloudfrontRedirectStack(app, 'RedirectLambda', {
+const redirect = new CloudfrontRedirectStack(app, 'RedirectLambda', {
   ...commonProps,
   stackName: 'RedirectLambda', // Be super explicit with CDK about the name of this stack.
 });
@@ -25,15 +25,15 @@ const siteProps = {
   githubOrg: 'ahammond',
   redirectFn: redirect.version,
   siteDomain: 'agh1973.com',
-}
+};
 
 // You can just add stanza after stanza to implement more sites.
-new lib.HugoSiteStack(app, 'Blog', {
+new HugoSiteStack(app, 'Blog', {
   ...siteProps,
   siteName: 'blog',
 });
 
-new lib.HugoSiteStack(app, 'Food', {
+new HugoSiteStack(app, 'Food', {
   ...siteProps,
   siteName: 'food',
 });

@@ -1,10 +1,10 @@
 import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
-import cdk = require('@aws-cdk/core');
-import CuT = require('../lib');
+import { App, Stack } from 'aws-cdk-lib';
+import * as CuT from '../src';
 
 test('cloudfront-redirect basic functionality', () => {
-  const app = new cdk.App();
-  const stack = new cdk.Stack(app, 'TestStack');
+  const app = new App();
+  const stack = new Stack(app, 'TestStack');
   // WHEN
   new CuT.CloudfrontRedirect(stack, 'Test');
   // THEN
