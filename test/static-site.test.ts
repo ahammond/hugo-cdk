@@ -4,8 +4,13 @@ import * as CuT from '../src';
 
 test('static-site basic functionality', () => {
   const app = new App();
-  const stack = new Stack(app, 'TestStack');
-  const fn = new CuT.CloudfrontRedirect(app, 'lambda');
+  const stack = new Stack(app, 'TestStack', {
+    env: {
+      account: '12341234234',
+      region: 'us-east-1',
+    },
+  });
+  const fn = new CuT.CloudfrontRedirect(stack, 'lambda');
   // WHEN
   new CuT.StaticSite(stack, 'TestSite', {
     siteName: 'test-name',
