@@ -20,7 +20,6 @@ export class CloudfrontRedirect extends Construct {
     );
 
     this.fn = new aws_lambda_nodejs.NodejsFunction(this, 'cloudfront-redirect', {
-      runtime: aws_lambda.Runtime.NODEJS_12_X, // Default would work, but let's go with latest greatest.
       role: role,
       bundling: {
         minify: true,
