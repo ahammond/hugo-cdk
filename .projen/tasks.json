@@ -228,14 +228,6 @@
           "exec": "cdk diff"
         }
       ]
-    },
-    "eslint:fix": {
-      "name": "eslint:fix",
-      "steps": [
-        {
-          "exec": "eslint --fix"
-        }
-      ]
     }
   },
   "env": {
