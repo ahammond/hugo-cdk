@@ -1,6 +1,6 @@
 const { AwsCdkTypeScriptApp } = require('projen');
 const project = new AwsCdkTypeScriptApp({
-  cdkVersion: '2.0.0-rc.4',
+  cdkVersion: '2.0.0-rc.24',
   defaultReleaseBranch: 'main',
   name: 'hugo-cdk',
 
