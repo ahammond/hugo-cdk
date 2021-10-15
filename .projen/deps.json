@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "@aws-cdk/assert",
+      "type": "build"
+    },
+    {
       "name": "@types/aws-lambda",
       "type": "build"
     },
@@ -27,7 +31,15 @@
       "type": "build"
     },
     {
+      "name": "esbuild",
+      "type": "build"
+    },
+    {
       "name": "eslint",
+      "type": "build"
+    },
+    {
+      "name": "eslint-config-prettier",
       "type": "build"
     },
     {
@@ -43,6 +55,10 @@
       "type": "build"
     },
     {
+      "name": "eslint-plugin-prettier",
+      "type": "build"
+    },
+    {
       "name": "jest",
       "type": "build"
     },
@@ -52,12 +68,20 @@
       "type": "build"
     },
     {
+      "name": "jsii-release",
+      "type": "build"
+    },
+    {
       "name": "json-schema",
       "type": "build"
     },
     {
       "name": "npm-check-updates",
       "version": "^11",
+      "type": "build"
+    },
+    {
+      "name": "prettier",
       "type": "build"
     },
     {

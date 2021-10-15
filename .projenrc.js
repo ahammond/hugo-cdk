@@ -11,7 +11,15 @@ const project = new AwsCdkTypeScriptApp({
   cdkDependencies: ['aws-cdk-lib'], // Kinda obsolete in a cdk v2 world.
   cdkVersionPinning: true,
   deps: ['aws-lambda', 'source-map-support'],
-  devDeps: ['@types/aws-lambda'],
+  devDeps: [
+    '@types/aws-lambda',
+    '@aws-cdk/assert',
+    'esbuild',
+    'eslint-config-prettier',
+    'eslint-plugin-prettier',
+    'jsii-release',
+    'prettier',
+  ],
   projectType: AwsCdkTypeScriptApp.projectType,
 
   defaultReleaseBranch: 'main',
