@@ -12,10 +12,11 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
-    "project": "./tsconfig.eslint.json"
+    "project": "./tsconfig.dev.json"
   },
   "extends": [
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:prettier/recommended"
   ],
   "settings": {
     "import/parsers": {
@@ -27,7 +28,7 @@
     "import/resolver": {
       "node": {},
       "typescript": {
-        "project": "./tsconfig.eslint.json"
+        "project": "./tsconfig.dev.json"
       }
     }
   },

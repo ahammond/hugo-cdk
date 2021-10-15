@@ -10,7 +10,7 @@
     },
     {
       "name": "@types/node",
-      "version": "^10.17.0",
+      "version": "^14.17.0",
       "type": "build"
     },
     {
@@ -23,7 +23,7 @@
     },
     {
       "name": "aws-cdk",
-      "version": "2.0.0-rc.10",
+      "version": "2.0.0-rc.24",
       "type": "build"
     },
     {
@@ -79,12 +79,12 @@
     },
     {
       "name": "@aws-cdk/assert",
-      "version": "2.0.0-rc.10",
+      "version": "2.0.0-rc.24",
       "type": "runtime"
     },
     {
       "name": "aws-cdk-lib",
-      "version": "2.0.0-rc.10",
+      "version": "2.0.0-rc.24",
       "type": "runtime"
     },
     {
