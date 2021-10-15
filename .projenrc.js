@@ -1,17 +1,20 @@
 const { AwsCdkTypeScriptApp, FileBase, TextFile, YamlFile } = require('projen');
 const project = new AwsCdkTypeScriptApp({
+  name: '@ahammond/hugo-cdk',
+  authorName: 'Andrew Hammond',
+  authorEmail: 'andrew.george.hammond@gmail.com',
+
   cdkVersion: '2.0.0-rc.24',
   defaultReleaseBranch: 'main',
   name: 'hugo-cdk',
 
-  cdkDependencies: ['aws-cdk-lib'] /* Which AWS CDK modules (those that start with "@aws-cdk/") this app uses. */,
+  cdkDependencies: ['aws-cdk-lib'], // Kinda obsolete in a cdk v2 world.
   cdkVersionPinning: true,
-  deps: ['aws-lambda', 'source-map-support'] /* Runtime dependencies of this module. */,
-  // description: undefined,            /* The description is just a string that helps people understand the purpose of the package. */
-  devDeps: ['@types/aws-lambda'] /* Build dependencies for this module. */,
-  // packageName: undefined,            /* The "name" in package.json. */
-  projectType: AwsCdkTypeScriptApp.projectType /* Which type of project this is (library/app). */,
-  // releaseWorkflow: undefined,        /* Define a GitHub workflow for releasing from "main" when new versions are bumped. */
+  deps: ['aws-lambda', 'source-map-support'],
+  devDeps: ['@types/aws-lambda'],
+  projectType: AwsCdkTypeScriptApp.projectType,
+
+  defaultReleaseBranch: 'main',
 });
 
 // include prettier

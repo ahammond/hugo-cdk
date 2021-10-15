@@ -18,6 +18,11 @@
     "upgrade-projen": "npx projen upgrade-projen",
     "projen": "npx projen"
   },
+  "author": {
+    "name": "Andrew Hammond",
+    "email": "andrew.george.hammond@gmail.com",
+    "organization": false
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.84",
     "@types/jest": "^27.0.2",
