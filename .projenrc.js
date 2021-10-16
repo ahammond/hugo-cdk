@@ -83,6 +83,29 @@ new YamlFile(project, 'codecov.yml', {
         precision: 2,
         round: 'down',
         range: '70...100',
+        status: {
+          project: {
+            // Controls for the entire project
+            default: {
+              target: 'auto',
+              threshold: '10%', // Allow total coverage to drop by this much while still succeeding.
+              paths: ['src'],
+              if_ci_failed: 'error',
+              only_pulls: true,
+            },
+            // Controls for just the code changed by the PR
+            patch: {
+              default: {
+                base: 'auto',
+                target: 'auto',
+                threshold: '10%', // Code in src that is changed by PR must have at least this much coverage.
+                paths: ['src'],
+                if_ci_failed: 'error',
+                only_pulls: true,
+              },
+            },
+          },
+        },
       },
       parsers: {
         gcov: {
