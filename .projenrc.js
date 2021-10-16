@@ -6,7 +6,6 @@ const project = new AwsCdkTypeScriptApp({
 
   cdkVersion: '2.0.0-rc.24',
   defaultReleaseBranch: 'main',
-  name: 'hugo-cdk',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repositoryUrl: 'https://github.com/ahammond/hugo-cdk.git',
 
@@ -23,8 +22,6 @@ const project = new AwsCdkTypeScriptApp({
     'jsii-release',
     'prettier',
   ],
-
-  defaultReleaseBranch: 'main',
 });
 
 // include prettier
@@ -77,7 +74,59 @@ const prLinter = new YamlFile(project, '.github/workflows/pr-linter.yml', {
   },
 });
 
-// Codecov support
+// Codecov config support
+new YamlFile(project, 'codecov.yml', {
+  obj: {
+    codecov: {
+      require_ci_to_pass: 'yes',
+      coverage: {
+        precision: 2,
+        round: 'down',
+        range: '70...100',
+        status: {
+          project: {
+            // Controls for the entire project
+            default: {
+              target: 'auto',
+              threshold: '10%', // Allow total coverage to drop by this much while still succeeding.
+              paths: ['src'],
+              if_ci_failed: 'error',
+              only_pulls: true,
+            },
+            // Controls for just the code changed by the PR
+            patch: {
+              default: {
+                base: 'auto',
+                target: 'auto',
+                threshold: '10%', // Code in src that is changed by PR must have at least this much coverage.
+                paths: ['src'],
+                if_ci_failed: 'error',
+                only_pulls: true,
+              },
+            },
+          },
+        },
+      },
+      parsers: {
+        gcov: {
+          branch_detection: {
+            conditional: 'yes',
+            loop: 'yes',
+            method: 'no',
+            macro: 'no',
+          },
+        },
+      },
+      comment: {
+        layout: 'reach,diff,flags,files,footer',
+        behavior: 'default',
+        require_changes: 'no',
+      },
+    },
+  },
+});
+
+// Codecov build support
 const buildSteps = project.buildWorkflow.jobs.build.steps;
 let projenBuildIdx = buildSteps.findIndex((obj, idx) => {
   return obj.name == 'build';
