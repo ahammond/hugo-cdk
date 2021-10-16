@@ -74,7 +74,36 @@ const prLinter = new YamlFile(project, '.github/workflows/pr-linter.yml', {
   },
 });
 
-// Codecov support
+// Codecov config support
+new YamlFile(project, 'codecov.yml', {
+  obj: {
+    codecov: {
+      require_ci_to_pass: 'yes',
+      coverage: {
+        precision: 2,
+        round: 'down',
+        range: '70...100',
+      },
+      parsers: {
+        gcov: {
+          branch_detection: {
+            conditional: 'yes',
+            loop: 'yes',
+            method: 'no',
+            macro: 'no',
+          },
+        },
+      },
+      comment: {
+        layout: 'reach,diff,flags,files,footer',
+        behavior: 'default',
+        require_changes: 'no',
+      },
+    },
+  },
+});
+
+// Codecov build support
 const buildSteps = project.buildWorkflow.jobs.build.steps;
 let projenBuildIdx = buildSteps.findIndex((obj, idx) => {
   return obj.name == 'build';

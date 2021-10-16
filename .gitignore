@@ -49,4 +49,5 @@ cdk.out/
 !/cdk.json
 !/.prettierrc.js
 !/.github/workflows/pr-linter.yml
+!/codecov.yml
 !/.github/workflows/upgrade.yml
