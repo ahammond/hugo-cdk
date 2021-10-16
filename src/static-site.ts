@@ -37,7 +37,7 @@ export interface StaticSiteProps {
 
 export interface IStaticSite {
   readonly bucket: aws_s3.IBucket;
-  readonly distribution: aws_cloudfront.Distribution;
+  readonly distribution: aws_cloudfront.IDistribution;
 }
 
 /**
