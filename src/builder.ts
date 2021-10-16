@@ -43,7 +43,9 @@ export class SiteBuilder extends Construct {
           'runtime-versions': {
             python: 3.8,
           },
-          'commands': [ // Install hugo
+          // eslint-disable-next-line
+          commands: [
+            // Install hugo
             `curl -L -o hugo.deb "${hugoDeb}"`,
             'dpkg -i hugo.deb',
           ],
