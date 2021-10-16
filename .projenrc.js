@@ -75,4 +75,26 @@ const prLinter = new YamlFile(project, '.github/workflows/pr-linter.yml', {
   },
 });
 
+// Codecov support
+const buildSteps = project.buildWorkflow.jobs.build.steps;
+let projenBuildIdx = buildSteps.findIndex((obj, idx) => {
+  return obj.name == 'build';
+});
+if (projenBuildIdx < 0) {
+  throw new Error('Did not find build step');
+}
+buildSteps.splice(projenBuildIdx + 1, 0, {
+  name: 'Codecov',
+  uses: 'codecov/codecov-action@v2',
+  with: {
+    token: '${{ secrets.CODECOV_TOKEN }}',
+    // directory: 'coverage',
+    // files: ./coverage1.xml,./coverage2.xml # optional
+    flags: 'unittests',
+    // name: codecov-umbrella
+    fail_ci_if_error: true,
+    verbose: true,
+  },
+});
+
 project.synth();

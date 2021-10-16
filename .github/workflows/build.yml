@@ -27,6 +27,13 @@ jobs:
         run: yarn install --check-files --frozen-lockfile
       - name: build
         run: npx projen build
+      - name: Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
+          fail_ci_if_error: true
+          verbose: true
       - name: Check for changes
         id: git_diff
         run: git diff --exit-code || echo "::set-output name=has_changes::true"
