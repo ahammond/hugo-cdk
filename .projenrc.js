@@ -6,7 +6,6 @@ const project = new AwsCdkTypeScriptApp({
 
   cdkVersion: '2.0.0-rc.24',
   defaultReleaseBranch: 'main',
-  name: 'hugo-cdk',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repositoryUrl: 'https://github.com/ahammond/hugo-cdk.git',
 
@@ -23,8 +22,6 @@ const project = new AwsCdkTypeScriptApp({
     'jsii-release',
     'prettier',
   ],
-
-  defaultReleaseBranch: 'main',
 });
 
 // include prettier
