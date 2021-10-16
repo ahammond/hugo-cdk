@@ -7,6 +7,8 @@ const project = new AwsCdkTypeScriptApp({
   cdkVersion: '2.0.0-rc.24',
   defaultReleaseBranch: 'main',
   name: 'hugo-cdk',
+  npmRegistryUrl: 'https://npm.pkg.github.com',
+  repositoryUrl: 'https://github.com/ahammond/hugo-cdk.git',
 
   cdkDependencies: ['aws-cdk-lib'], // Kinda obsolete in a cdk v2 world.
   cdkVersionPinning: true,
@@ -17,10 +19,10 @@ const project = new AwsCdkTypeScriptApp({
     'esbuild',
     'eslint-config-prettier',
     'eslint-plugin-prettier',
+    'codecov',
     'jsii-release',
     'prettier',
   ],
-  projectType: AwsCdkTypeScriptApp.projectType,
 
   defaultReleaseBranch: 'main',
 });
