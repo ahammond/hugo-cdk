@@ -40,7 +40,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.2.5",
     "jest-junit": "^12",
-    "jsii-release": "^0.2.149",
+    "jsii-release": "^0.2.150",
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
     "prettier": "^2.4.1",
