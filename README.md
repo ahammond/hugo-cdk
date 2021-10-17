@@ -1,3 +1,7 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/ahammond/hugo-cdk/branch/main/graph/badge.svg?token=A7NOP28CH7)](https://codecov.io/gh/ahammond/hugo-cdk)
+![release](https://github.com/github/docs/actions/workflows/release.yml/badge.svg?branch=main)
+
 # Hugo CDK
 
 Connect a github repository to an AWS CodeBuild so that it does HUGO builds of that repo on every PR.
@@ -30,3 +34,7 @@ npx cdk --profile personal bootstrap
 # Deploy all the things.
 npx cdk --profile personal deploy \*
 ```
+
+## Coverage
+
+![coverage](https://codecov.io/gh/ahammond/hugo-cdk/branch/main/graphs/sunburst.svg)
