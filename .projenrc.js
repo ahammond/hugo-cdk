@@ -133,8 +133,12 @@ new YamlFile(project, 'codecov.yml', {
 });
 
 // Codecov build support
+// We don't have working releases yet.
+// To run codecov manually, grab the CODECOV_TOKEN from
+// https://app.codecov.io/gh/ahammond/hugo-cdk/settings
+// and then `npx codecov`
 const buildSteps = project.buildWorkflow.jobs.build.steps;
-let projenBuildIdx = buildSteps.findIndex((obj, idx) => {
+let projenBuildIdx = buildSteps.findIndex((obj, _idx) => {
   return obj.name == 'build';
 });
 if (projenBuildIdx < 0) {
