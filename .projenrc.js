@@ -22,6 +22,12 @@ const project = new AwsCdkTypeScriptApp({
     'jsii-release',
     'prettier',
   ],
+
+  jestOptions: {
+    jestConfig: {
+      collectCoverageFrom: ['src/**/*.ts'],
+    },
+  },
 });
 
 // include prettier

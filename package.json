@@ -64,6 +64,9 @@
   },
   "version": "0.0.0",
   "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
     "testMatch": [
       "**/__tests__/**/*.ts?(x)",
       "**/?(*.)+(spec|test).ts?(x)"
