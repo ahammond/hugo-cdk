@@ -37,3 +37,8 @@ new HugoSiteStack(app, 'Food', {
   ...siteProps,
   siteName: 'food',
 });
+
+new HugoSiteStack(app, 'Ferries', {
+  ...siteProps,
+  siteName: 'ferries',
+});
