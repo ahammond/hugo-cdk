@@ -87,6 +87,7 @@ export class StaticSite extends Construct implements IStaticSite {
       encryption: aws_s3.BucketEncryption.S3_MANAGED, // https://aws.amazon.com/premiumsupport/knowledge-center/s3-website-cloudfront-error-403/
       removalPolicy: RemovalPolicy.DESTROY,
       accessControl: aws_s3.BucketAccessControl.PRIVATE,
+      blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: '404.html',
     });
@@ -114,6 +115,7 @@ export class StaticSite extends Construct implements IStaticSite {
             eventType: aws_cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
           },
         ],
+        viewerProtocolPolicy: aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       domainNames: [fqdn],
       errorResponses: [
