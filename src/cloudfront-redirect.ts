@@ -22,7 +22,6 @@ export class CloudfrontRedirect extends Construct {
     this.fn = new aws_lambda_nodejs.NodejsFunction(this, 'cloudfront-redirect', {
       role: role,
       bundling: {
-        minify: true,
         externalModules: [
           'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
           '@types/aws-lambda',
