@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       aws-cdk-lib:
-        specifier: 2.159.1
+        specifier: ^2.159.1
         version: 2.159.1(constructs@10.3.0)
       aws-lambda:
         specifier: ^1.0.7
@@ -40,7 +40,7 @@ importers:
         specifier: ^7
         version: 7.18.0(eslint@8.57.1)(typescript@4.9.5)
       aws-cdk:
-        specifier: 2.159.1
+        specifier: ^2.159.1
         version: 2.159.1
       codecov:
         specifier: ^3.8.3
