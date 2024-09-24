@@ -1,4 +1,7 @@
-import { App, aws_cloudfront, aws_s3, Stack } from 'aws-cdk-lib';
+import { App, Stack } from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as CuT from '../src';
 
 test('builder snapshot', () => {
@@ -9,15 +12,20 @@ test('builder snapshot', () => {
     githubOrg: 'testOrg',
     githubRepo: 'testRepo',
     production: {
-      bucket: aws_s3.Bucket.fromBucketAttributes(stack, 'Bucket', {
-        bucketName: 'testBucket',
+      bucket: Bucket.fromBucketAttributes(stack, 'Bucket', {
+        bucketName: 'test-bucket',
       }),
-      distribution: aws_cloudfront.Distribution.fromDistributionAttributes(stack, 'Distribution', {
-        distributionId: 'testDistributionId',
-        domainName: 'testDomainName',
-      }),
+      distribution: Distribution.fromDistributionAttributes(
+        stack,
+        'Distribution',
+        {
+          distributionId: 'testDistributionId',
+          domainName: 'testDomainName',
+        }
+      ),
     },
   });
   // THEN
-  expect(app.synth().getStackArtifact(stack.artifactId).template).toMatchSnapshot();
+  const template = Template.fromStack(stack);
+  expect(template.toJSON()).toMatchSnapshot();
 });

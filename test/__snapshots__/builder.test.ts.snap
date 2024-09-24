@@ -5,7 +5,7 @@ Object {
   "Parameters": Object {
     "BootstrapVersion": Object {
       "Default": "/cdk-bootstrap/hnb659fds/version",
-      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store.",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
@@ -14,6 +14,9 @@ Object {
       "Properties": Object {
         "Artifacts": Object {
           "Type": "NO_ARTIFACTS",
+        },
+        "Cache": Object {
+          "Type": "NO_CACHE",
         },
         "EncryptionKey": "alias/aws/s3",
         "Environment": Object {
@@ -56,7 +59,7 @@ Object {
     \\"post_build\\": {
       \\"commands\\": [
         \\"echo \\\\\\"CODEBUILD_WEBHOOK_TRIGGER: $CODEBUILD_WEBHOOK_TRIGGER\\\\\\"\\",
-        \\"if [ 'branch/master' = \\\\\\"$CODEBUILD_WEBHOOK_TRIGGER\\\\\\" ]; then\\\\n              cd public;\\\\n              aws s3 sync --delete --no-progress --sse AES256 --storage-class INTELLIGENT_TIERING . \\\\\\"s3://testBucket\\\\\\";\\\\n              aws cloudfront create-invalidation --distribution-id \\\\\\"testDistributionId\\\\\\" --paths '/*';\\\\n            else\\\\n              echo \\\\\\"not master: do not publish\\\\\\";\\\\n            fi\\"
+        \\"if [ 'branch/master' = \\\\\\"$CODEBUILD_WEBHOOK_TRIGGER\\\\\\" ]; then\\\\n              cd public;\\\\n              aws s3 sync --delete --no-progress --sse AES256 --storage-class INTELLIGENT_TIERING . \\\\\\"s3://test-bucket\\\\\\";\\\\n              aws cloudfront create-invalidation --distribution-id \\\\\\"testDistributionId\\\\\\" --paths '/*';\\\\n            else\\\\n              echo \\\\\\"not master: do not publish\\\\\\";\\\\n            fi\\"
       ]
     }
   }
@@ -198,6 +201,10 @@ Object {
                 "s3:List*",
                 "s3:DeleteObject*",
                 "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
                 "s3:Abort*",
               ],
               "Effect": "Allow",
@@ -210,7 +217,7 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::testBucket",
+                      ":s3:::test-bucket",
                     ],
                   ],
                 },
@@ -222,7 +229,7 @@ Object {
                       Object {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::testBucket/*",
+                      ":s3:::test-bucket/*",
                     ],
                   ],
                 },
