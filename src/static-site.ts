@@ -10,12 +10,7 @@ import {
   PriceClass,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import {
-  Bucket,
-  BucketAccessControl,
-  BucketEncryption,
-  IBucket,
-} from 'aws-cdk-lib/aws-s3';
+import { Bucket, BucketAccessControl, BucketEncryption, IBucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { Construct } from 'constructs';
@@ -78,7 +73,7 @@ export class StaticSite extends Construct implements IStaticSite {
       bucketName: `${fqdn}-logs`,
       encryption: BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
-      accessControl: BucketAccessControl.PRIVATE,
+      objectOwnership: ObjectOwnership.OBJECT_WRITER,
       lifecycleRules: [
         {
           expiration: Duration.days(10), // Do you really want to keep logs for longer than 10 days?

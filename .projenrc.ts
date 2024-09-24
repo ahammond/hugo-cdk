@@ -8,7 +8,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   authorName: 'Andrew Hammond',
   authorEmail: 'andrew.george.hammond@gmail.com',
 
-  cdkVersion: '2.159.1',
+  cdkVersion: '2.160.0',
   defaultReleaseBranch: 'main',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repository: 'https://github.com/ahammond/hugo-cdk.git',
