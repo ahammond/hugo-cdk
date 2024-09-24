@@ -33,7 +33,6 @@
     "organization": false
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^2.68.0",
     "@types/aws-lambda": "^8.10.145",
     "@types/jest": "^27.5.2",
     "@types/node": "^20",
@@ -54,7 +53,7 @@
     "projen": "^0.88.0",
     "ts-jest": "^27.1.5",
     "ts-node": "^9.1.1",
-    "typescript": "^4.9.5"
+    "typescript": "~5.3.0"
   },
   "dependencies": {
     "aws-cdk-lib": "^2.159.1",

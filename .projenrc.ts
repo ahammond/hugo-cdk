@@ -31,8 +31,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     '@aws-cdk/aws-apigateway:disableCloudWatchRole': true,
     '@aws-cdk/core:enablePartitionLiterals': true,
     '@aws-cdk/aws-events:eventsTargetQueueSameAccount': true,
-    '@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker':
-      true,
+    '@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker': true,
     '@aws-cdk/aws-iam:importedRoleStackSafeDefaultPolicyName': true,
     '@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy': true,
     '@aws-cdk/aws-route53-patters:useCertificate': true,
@@ -41,28 +40,23 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     '@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup': true,
     '@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId': true,
     '@aws-cdk/aws-ec2:launchTemplateDefaultUserData': true,
-    '@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments':
-      true,
+    '@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments': true,
     '@aws-cdk/aws-redshift:columnId': true,
     '@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2': true,
     '@aws-cdk/aws-ec2:restrictDefaultSecurityGroup': true,
     '@aws-cdk/aws-apigateway:requestValidatorUniqueId': true,
     '@aws-cdk/aws-kms:aliasNameRef': true,
-    '@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig':
-      true,
+    '@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig': true,
     '@aws-cdk/core:includePrefixInUniqueNameGeneration': true,
     '@aws-cdk/aws-efs:denyAnonymousAccess': true,
     '@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby': true,
     '@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion': true,
     '@aws-cdk/aws-efs:mountTargetOrderInsensitiveLogicalId': true,
-    '@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters':
-      true,
+    '@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters': true,
     '@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier': true,
     '@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials': true,
-    '@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource':
-      true,
-    '@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction':
-      true,
+    '@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource': true,
+    '@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction': true,
     '@aws-cdk/aws-codepipeline:crossAccountKeysDefaultValueToFalse': true,
     '@aws-cdk/aws-codepipeline:defaultPipelineTypeToV2': true,
     '@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope': true,
@@ -78,7 +72,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   deps: ['aws-lambda', 'source-map-support'],
   devDeps: [
     '@types/aws-lambda',
-    '@aws-cdk/assert',
     'esbuild',
     'eslint-config-prettier',
     'eslint-plugin-prettier',
@@ -86,12 +79,25 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     'jsii-release',
     'prettier',
   ],
+  // jsiiVersion: '~5.3.0',
+  typescriptVersion: '~5.3.0',
+
+  prettier: true,
+  prettierOptions: {
+    settings: {
+      printWidth: 120,
+      singleQuote: true,
+      trailingComma: javascript.TrailingComma.ALL,
+    },
+  },
 
   jestOptions: {
     jestConfig: {
       collectCoverageFrom: ['src/**/*.ts'],
     },
   },
+
+  codeCov: true,
 
   packageManager: javascript.NodePackageManager.PNPM,
   pnpmVersion: '9',
