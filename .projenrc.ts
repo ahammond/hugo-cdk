@@ -15,8 +15,11 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   minNodeVersion: '20.16.0',
   workflowNodeVersion: '20.16.0',
 
-  // https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/cx-api/FEATURE_FLAGS.md#currently-recommended-cdkjson
   context: {
+    // We aren't using aws-sdk v2 anywhere. Silence the warning.
+    '@aws-cdk/aws-lambda-nodejs:sdkV2NotInRuntime': false,
+
+    // https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/cx-api/FEATURE_FLAGS.md#currently-recommended-cdkjson
     '@aws-cdk/aws-lambda:recognizeLayerVersion': true,
     '@aws-cdk/core:checkSecretUsage': true,
     '@aws-cdk/core:target-partitions': ['aws', 'aws-cn'],
