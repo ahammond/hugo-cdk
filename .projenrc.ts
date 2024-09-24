@@ -12,6 +12,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'main',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repository: 'https://github.com/ahammond/hugo-cdk.git',
+  minNodeVersion: '20.16.0',
+  workflowNodeVersion: '20.16.0',
 
   // https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/cx-api/FEATURE_FLAGS.md#currently-recommended-cdkjson
   context: {
