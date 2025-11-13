@@ -1,18 +1,13 @@
-import {
-  aws_certificatemanager,
-  aws_cloudfront,
-  aws_cloudfront_origins,
-  aws_iam,
-  aws_lambda,
-  aws_s3,
-  aws_route53,
-  aws_route53_targets,
-  Duration,
-  RemovalPolicy,
-  Stack,
-  StackProps,
-} from 'aws-cdk-lib';
+import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import { Distribution, IDistribution, LambdaEdgeEventType, PriceClass } from 'aws-cdk-lib/aws-cloudfront';
+import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import { Bucket, BucketAccessControl, BucketEncryption, IBucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
+
+import { CloudfrontRedirect } from './cloudfront-redirect';
 
 export interface StaticSiteProps {
   /**
@@ -29,20 +24,17 @@ export interface StaticSiteProps {
    * but either way the zone has to be in AWS Route53 for it to work.
    */
   readonly siteDomain: string;
-  /**
-   * The standard-redirects-for-cloudfront lambda
-   */
-  readonly redirectFn: aws_lambda.IVersion;
 }
 
 export interface IStaticSite {
-  readonly bucket: aws_s3.IBucket;
-  readonly distribution: aws_cloudfront.IDistribution;
+  readonly bucket: IBucket;
+  readonly distribution: IDistribution;
 }
 
 /**
  * Generate a static website distribution in AWS.
  * Includes:
+ * - A lambda for managing rewrites to canonicalize index.html.
  * - S3 bucket to host content
  * - ACM certificate for https (dns validated)
  * - CloudFront CDN for secure delivery of content
@@ -51,25 +43,29 @@ export interface IStaticSite {
  * - DNS management for the CloudFront domain
  */
 export class StaticSite extends Construct implements IStaticSite {
-  public readonly bucket: aws_s3.Bucket;
-  public readonly distribution: aws_cloudfront.Distribution;
+  public readonly bucket: Bucket;
+  public readonly distribution: Distribution;
 
   constructor(scope: Construct, id: string, props: StaticSiteProps) {
     super(scope, id);
 
-    const fqdn = `${props.siteName}.${props.siteDomain}`;
-    const zone = aws_route53.HostedZone.fromLookup(this, 'Zone', { domainName: props.siteDomain });
+    const lambda = new CloudfrontRedirect(this);
 
-    const certificate = new aws_certificatemanager.DnsValidatedCertificate(this, 'Certificate', {
-      domainName: fqdn,
-      hostedZone: zone,
+    const fqdn = `${props.siteName}.${props.siteDomain}`;
+    const zone = HostedZone.fromLookup(this, 'Zone', {
+      domainName: props.siteDomain,
     });
 
-    const logBucket = new aws_s3.Bucket(this, 'LogBucket', {
+    const certificate = new Certificate(this, 'Certificate', {
+      domainName: fqdn,
+      validation: CertificateValidation.fromDns(zone),
+    });
+
+    const logBucket = new Bucket(this, 'LogBucket', {
       bucketName: `${fqdn}-logs`,
-      encryption: aws_s3.BucketEncryption.S3_MANAGED,
+      encryption: BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
-      accessControl: aws_s3.BucketAccessControl.PRIVATE,
+      objectOwnership: ObjectOwnership.OBJECT_WRITER,
       lifecycleRules: [
         {
           expiration: Duration.days(10), // Do you really want to keep logs for longer than 10 days?
@@ -77,41 +73,34 @@ export class StaticSite extends Construct implements IStaticSite {
       ],
     });
 
-    // Provide an identity for CloudFront to use to access the S3 bucket.
-    const originAccessIdentity = new aws_cloudfront.OriginAccessIdentity(this, 'OriginAccessIdentity', {
-      comment: `OAI for ${fqdn}`,
-    });
-
-    this.bucket = new aws_s3.Bucket(this, 'Bucket', {
+    this.bucket = new Bucket(this, 'Bucket', {
       bucketName: fqdn,
-      encryption: aws_s3.BucketEncryption.S3_MANAGED, // https://aws.amazon.com/premiumsupport/knowledge-center/s3-website-cloudfront-error-403/
+      encryption: BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
-      accessControl: aws_s3.BucketAccessControl.PRIVATE,
-      websiteIndexDocument: 'index.html',
-      websiteErrorDocument: '404.html',
+      accessControl: BucketAccessControl.PRIVATE,
     });
 
     // Grant the CloudFront OAI access to the bucket.
-    this.bucket.addToResourcePolicy(
-      new aws_iam.PolicyStatement({
-        actions: ['s3:GetBucket*', 's3:GetObject*', 's3:List*'],
-        resources: [this.bucket.bucketArn, `${this.bucket.bucketArn}/*`],
-        principals: [
-          new aws_iam.CanonicalUserPrincipal(originAccessIdentity.cloudFrontOriginAccessIdentityS3CanonicalUserId),
-        ],
-      }),
-    );
+    // this.bucket.addToResourcePolicy(
+    //   new PolicyStatement({
+    //     actions: ['s3:GetBucket*', 's3:GetObject*', 's3:List*'],
+    //     resources: [this.bucket.bucketArn, `${this.bucket.bucketArn}/*`],
+    //     principals: [
+    //       new CanonicalUserPrincipal(
+    //         originAccessIdentity.cloudFrontOriginAccessIdentityS3CanonicalUserId
+    //       ),
+    //     ],
+    //   })
+    // );
 
-    this.distribution = new aws_cloudfront.Distribution(this, 'Distribution', {
+    this.distribution = new Distribution(this, 'Distribution', {
       certificate,
       defaultBehavior: {
-        origin: new aws_cloudfront_origins.S3Origin(this.bucket, {
-          originAccessIdentity,
-        }),
+        origin: S3BucketOrigin.withOriginAccessControl(this.bucket, {}),
         edgeLambdas: [
           {
-            functionVersion: props.redirectFn,
-            eventType: aws_cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
+            functionVersion: lambda.currentVersion,
+            eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
           },
         ],
       },
@@ -124,12 +113,12 @@ export class StaticSite extends Construct implements IStaticSite {
         },
       ],
       logBucket,
-      priceClass: aws_cloudfront.PriceClass.PRICE_CLASS_100,
+      priceClass: PriceClass.PRICE_CLASS_100,
     });
 
     // Route53 alias record for the CloudFront distribution
-    new aws_route53.ARecord(this, 'SiteAlias', {
-      target: aws_route53.RecordTarget.fromAlias(new aws_route53_targets.CloudFrontTarget(this.distribution)),
+    new ARecord(this, 'SiteAlias', {
+      target: RecordTarget.fromAlias(new CloudFrontTarget(this.distribution)),
       zone: zone,
       recordName: fqdn,
     });
@@ -139,8 +128,8 @@ export class StaticSite extends Construct implements IStaticSite {
 export interface StaticSiteStackProps extends StaticSiteProps, StackProps {}
 
 export class StaticSiteStack extends Stack implements IStaticSite {
-  public readonly bucket: aws_s3.Bucket;
-  public readonly distribution: aws_cloudfront.Distribution;
+  public readonly bucket: Bucket;
+  public readonly distribution: Distribution;
 
   constructor(scope: Construct, id: string, props: StaticSiteStackProps) {
     super(scope, id, props);

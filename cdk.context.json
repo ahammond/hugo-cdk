@@ -2,5 +2,10 @@
   "hosted-zone:account=263869919117:domainName=agh1973.com:region=us-east-1": {
     "Id": "/hostedzone/Z2EIFYZCOMYC7P",
     "Name": "agh1973.com."
-  }
+  },
+  "acknowledged-issue-numbers": [
+    null,
+    34892,
+    32775
+  ]
 }

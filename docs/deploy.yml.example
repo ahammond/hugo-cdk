@@ -1,0 +1,90 @@
+# GitHub Actions workflow for deploying Hugo sites to AWS
+#
+# This workflow uses mise for tool version management (Hugo version defined in mise.toml)
+#
+# Prerequisites:
+# 1. Deploy the hugo-cdk stack to create the S3 bucket, CloudFront distribution, and IAM role
+# 2. Get the outputs from CDK (run: cdk deploy YourStackName)
+# 3. Set the following in your GitHub repository secrets/variables:
+#    - AWS_ROLE_ARN: The GitHubActionsRoleArn output from CDK
+#    - AWS_S3_BUCKET: The S3BucketName output from CDK
+#    - AWS_CLOUDFRONT_ID: The CloudFrontDistributionId output from CDK
+#    - AWS_REGION: us-east-1 (or your deployment region)
+
+name: Deploy Hugo Site
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write  # Required for OIDC authentication
+  contents: read   # Required to check out the repository
+
+jobs:
+  build:
+    name: Build Hugo Site
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive  # Fetch Hugo themes
+          fetch-depth: 0         # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup mise
+        uses: jdx/mise-action@v2
+        with:
+          experimental: true
+
+      - name: Build site
+        run: mise run build --minify
+        env:
+          HUGO_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hugo-site
+          path: public/
+          retention-days: 1
+
+  deploy:
+    name: Deploy to AWS
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: hugo-site
+          path: public/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+          role-session-name: GitHubActions-${{ github.run_id }}
+
+      - name: Sync to S3
+        run: |
+          aws s3 sync \
+            --delete \
+            --no-progress \
+            --sse AES256 \
+            --storage-class INTELLIGENT_TIERING \
+            public/ s3://${{ vars.AWS_S3_BUCKET }}/
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.AWS_CLOUDFRONT_ID }} \
+            --paths "/*"
