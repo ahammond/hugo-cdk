@@ -1,42 +1,93 @@
 # GitHub Actions Setup Guide
 
-This guide explains how to configure GitHub Actions for deploying Hugo sites to AWS using the infrastructure created by this CDK application. An example workflow file (`deploy.yml.example`) is provided in this directory.
+This guide explains how to configure GitHub Actions for deploying Hugo sites to AWS using the infrastructure created by this CDK application with Projen Pipelines.
+
+## Architecture Overview
+
+**This CDK Repo (`ahammond/hugo-cdk`):**
+- Deploys infrastructure via GitHub Actions + Projen Pipelines
+- Creates CloudFront distributions, S3 buckets, IAM roles
+- Stack: `HugoCDK-prod` (contains Blog and Food as nested stacks)
+
+**Your Hugo Content Repos (`ahammond/blog`, `ahammond/food`):**
+- Deploy Hugo content via GitHub Actions
+- Sync content to S3 buckets
+- Invalidate CloudFront cache
+- Use roles created by this CDK app
 
 ## Setup Instructions
 
-### 1. Deploy the CDK Stack
+### 1. Deploy the CDK Infrastructure
 
-First, deploy the infrastructure:
+Deploy via Projen Pipelines (after bootstrap):
 
 ```bash
-pnpm run build
-pnpm run deploy
+# Deploy bootstrap stack first (one-time)
+DEPLOY_STAGE=bootstrap cdk deploy GitHubOIDCBootstrap
+
+# Deploy infrastructure (or push to main for auto-deploy)
+pnpm run deploy:prod
 ```
 
-After deployment, note the outputs from CDK:
-- `GitHubActionsRoleArn`
-- `S3BucketName`
-- `CloudFrontDistributionId`
+After deployment, note the CloudFormation exports from the nested stacks:
+- **For Blog**: Exports prefixed with `Blog-`
+- **For Food**: Exports prefixed with `Food-`
 
-### 2. Configure GitHub Repository
+### 2. Get CloudFormation Exports
 
-In your Hugo site repository (not this CDK repo), configure the following:
+Get the values from CloudFormation exports:
 
-#### Repository Secrets
+```bash
+# For Blog site
+aws cloudformation list-exports --region us-east-1 \
+  --query 'Exports[?Name==`Blog-GitHubActionsRoleArn`].Value' --output text
 
-Go to Settings → Secrets and variables → Actions → New repository secret:
+aws cloudformation list-exports --region us-east-1 \
+  --query 'Exports[?Name==`Blog-S3BucketName`].Value' --output text
 
-- `AWS_ROLE_ARN`: The IAM role ARN from CDK output (GitHubActionsRoleArn)
-- `AWS_S3_BUCKET`: The S3 bucket name from CDK output
-- `AWS_CLOUDFRONT_ID`: The CloudFront distribution ID from CDK output
+aws cloudformation list-exports --region us-east-1 \
+  --query 'Exports[?Name==`Blog-CloudFrontDistributionId`].Value' --output text
+```
 
-#### Repository Variables (Optional)
+Or get directly from stack outputs:
+```bash
+aws cloudformation describe-stacks --stack-name HugoCDK-prod --region us-east-1 \
+  --query 'Stacks[0].Outputs' --output table
+```
 
-Go to Settings → Secrets and variables → Actions → Variables:
+### 3. Configure GitHub Repository Variables
 
-- `AWS_REGION`: `us-east-1` (or your deployment region)
+In your **Hugo site repository** (e.g., `ahammond/blog`), go to:
+**Settings → Secrets and variables → Actions → Variables → New repository variable**
 
-### 3. Copy Workflow to Hugo Repository
+Add these variables:
+
+**For Blog repo (`ahammond/blog`):**
+- `AWS_ROLE_ARN`: Value from `Blog-GitHubActionsRoleArn` export
+  - Example: `arn:aws:iam::263869919117:role/github-actions-blog-deploy`
+- `AWS_S3_BUCKET`: Value from `Blog-S3BucketName` export
+  - Example: `blog.agh1973.com`
+- `AWS_CLOUDFRONT_ID`: Value from `Blog-CloudFrontDistributionId` export
+  - Example: `E1XO7DGEFLUJQX`
+- `AWS_REGION`: `us-east-1`
+
+**For Food repo (`ahammond/food`):**
+- `AWS_ROLE_ARN`: Value from `Food-GitHubActionsRoleArn` export
+- `AWS_S3_BUCKET`: Value from `Food-S3BucketName` export
+- `AWS_CLOUDFRONT_ID`: Value from `Food-CloudFrontDistributionId` export
+- `AWS_REGION`: `us-east-1`
+
+**Via GitHub CLI:**
+
+```bash
+cd ../blog
+gh variable set AWS_ROLE_ARN --body "arn:aws:iam::263869919117:role/github-actions-blog-deploy"
+gh variable set AWS_S3_BUCKET --body "blog.agh1973.com"
+gh variable set AWS_CLOUDFRONT_ID --body "E1XO7DGEFLUJQX"
+gh variable set AWS_REGION --body "us-east-1"
+```
+
+### 4. Copy Workflow to Hugo Repository
 
 Copy `deploy.yml.example` to your Hugo repository:
 
@@ -48,7 +99,7 @@ cp /path/to/hugo-cdk/docs/deploy.yml.example .github/workflows/deploy.yml
 
 Edit the workflow file if needed (e.g., change branch names, Hugo version).
 
-### 4. Push and Deploy
+### 5. Push and Deploy
 
 Push changes to the `main` branch:
 
@@ -99,7 +150,8 @@ Update the `hugo-version` in the workflow to match your local Hugo version:
 
 ## Security Notes
 
-- Secrets are never exposed in logs
+- Variables are visible in logs but don't contain secrets (only resource IDs)
 - OIDC tokens are short-lived (15 minutes by default)
 - Role permissions are scoped to specific S3 bucket and CloudFront distribution
 - Only specified GitHub repos and branches can assume the role
+- No AWS credentials stored - authentication via OIDC
