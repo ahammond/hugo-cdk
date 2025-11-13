@@ -1,6 +1,4 @@
-import * as awsLambda from 'aws-lambda';
-
-function generateRedirectResponse(value: string): awsLambda.CloudFrontRequestResult {
+function generateRedirectResponse(value: string) {
   return {
     status: '301',
     statusDescription: 'Found',
@@ -15,11 +13,7 @@ function generateRedirectResponse(value: string): awsLambda.CloudFrontRequestRes
   };
 }
 
-export const handler: awsLambda.CloudFrontRequestHandler = (
-  event: awsLambda.CloudFrontRequestEvent,
-  _context: awsLambda.Context,
-  callback: awsLambda.Callback<awsLambda.CloudFrontRequestResult>,
-): void => {
+export const handler = (event: any, _context: any, callback: any): void => {
   const request = event.Records[0].cf.request;
 
   let prefixPath;

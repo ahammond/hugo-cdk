@@ -8,12 +8,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   authorName: 'Andrew Hammond',
   authorEmail: 'andrew.george.hammond@gmail.com',
 
-  cdkVersion: '2.160.0',
+  cdkVersion: '2.223.0',
   defaultReleaseBranch: 'main',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repository: 'https://github.com/ahammond/hugo-cdk.git',
-  minNodeVersion: '20.16.0',
-  workflowNodeVersion: '20.16.0',
+  minNodeVersion: '22.19.0',
+  workflowNodeVersion: '22.19.0',
 
   context: {
     // We aren't using aws-sdk v2 anywhere. Silence the warning.
