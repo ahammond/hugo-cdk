@@ -19,7 +19,7 @@ const app = new App();
 // - S3 bucket + CloudFront distribution
 // - IAM role that GitHub Actions can assume
 //
-// After deploying, the GitHub repo needs a workflow (see .github/workflows/deploy.yml.example)
+// After deploying, the GitHub repo needs a workflow (see docs/deploy.yml.example)
 // that uses the role ARN output from this stack.
 
 new HugoSiteStack(app, 'Blog', {

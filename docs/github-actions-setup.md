@@ -1,6 +1,6 @@
-# GitHub Actions Workflow Example
+# GitHub Actions Setup Guide
 
-This directory contains an example GitHub Actions workflow (`deploy.yml.example`) for deploying Hugo sites to AWS using the infrastructure created by this CDK application.
+This guide explains how to configure GitHub Actions for deploying Hugo sites to AWS using the infrastructure created by this CDK application. An example workflow file (`deploy.yml.example`) is provided in this directory.
 
 ## Setup Instructions
 
@@ -43,7 +43,7 @@ Copy `deploy.yml.example` to your Hugo repository:
 ```bash
 # In your Hugo repository
 mkdir -p .github/workflows
-cp /path/to/hugo-cdk/.github/workflows/deploy.yml.example .github/workflows/deploy.yml
+cp /path/to/hugo-cdk/docs/deploy.yml.example .github/workflows/deploy.yml
 ```
 
 Edit the workflow file if needed (e.g., change branch names, Hugo version).

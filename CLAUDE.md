@@ -29,17 +29,25 @@ pnpm run test
 # Run tests in watch mode
 pnpm run test:watch
 
+# Run a single test file
+pnpm run test test/cloudfront-redirect.test.ts
+
 # Lint
 pnpm run eslint
 
 # CDK commands (use appropriate --profile flag if needed)
+pnpm cdk list           # List all stacks
 pnpm run synth          # Synthesize CloudFormation templates
 pnpm run diff           # Compare deployed stack with current state
 pnpm run deploy         # Deploy all stacks
+pnpm cdk deploy Blog    # Deploy specific stack
 pnpm run destroy        # Destroy all stacks
 
 # Bootstrap CDK (one-time per AWS account)
 npx cdk --profile personal bootstrap
+
+# Invalidate CloudFront cache (after deployment if needed)
+aws cloudfront create-invalidation --distribution-id <distribution-id> --paths "/*"
 ```
 
 ### Projen Management
@@ -76,6 +84,10 @@ The application is structured around three main CDK constructs:
    - No GitHub credentials stored in AWS - uses short-lived OIDC tokens instead
 
 4. **CloudfrontRedirect** (`src/cloudfront-redirect.ts`): Lambda@Edge function that handles URL canonicalization at the CloudFront edge. Companion implementation file: `src/cloudfront-redirect.cloudfront-redirect.ts`.
+   - Extends `NodejsFunction` for TypeScript bundling with esbuild
+   - Uses `determineLatestNodeRuntime(scope)` for runtime selection
+   - Automatically handles index.html rewriting for directory paths (including root `/`)
+   - Uses `currentVersion` for automatic Lambda version management
 
 ### Configuration
 
@@ -97,12 +109,12 @@ Multiple sites can be deployed by adding additional `HugoSiteStack` instances in
    This creates S3 buckets, CloudFront distributions, IAM roles, and outputs the values needed for GitHub Actions.
 
 2. **Configure GitHub Repository**:
-   - Copy `.github/workflows/deploy.yml.example` to your Hugo repository as `.github/workflows/deploy.yml`
+   - Copy `docs/deploy.yml.example` to your Hugo repository as `.github/workflows/deploy.yml`
    - Set GitHub secrets from CDK outputs:
      - `AWS_ROLE_ARN`: GitHubActionsRoleArn from stack outputs
      - `AWS_S3_BUCKET`: S3BucketName from stack outputs
      - `AWS_CLOUDFRONT_ID`: CloudFrontDistributionId from stack outputs
-   - See `.github/workflows/README.md` for detailed setup instructions
+   - See `docs/github-actions-setup.md` for detailed setup instructions
 
 3. **Deploy Hugo Site**:
    Push to the configured branch (default: `main`) in your Hugo repository. GitHub Actions will:
@@ -143,12 +155,60 @@ Tests use Jest with ts-jest preset:
 - **Branch Configuration**: Default deployment branch is `main` (configurable via `allowedBranches` property)
 
 ### Technical Requirements
-- Lambda@Edge requires specific IAM role configuration with both lambda.amazonaws.com and edgelambda.amazonaws.com principals
-- Lambda@Edge runtime: Node.js 22.x
-- All infrastructure must be deployed to us-east-1 (required for CloudFront/Lambda@Edge)
-- CloudFront distributions require ACM certificates in us-east-1
+- **Lambda@Edge IAM**: Requires specific IAM role configuration with both `lambda.amazonaws.com` and `edgelambda.amazonaws.com` principals
+- **Lambda@Edge Runtime**: Uses `determineLatestNodeRuntime()` function to automatically select the latest supported Node.js runtime (currently Node.js 22.x)
+  - **DO NOT use** `Runtime.NODEJS_LATEST` directly - it has known issues
+  - Use `determineLatestNodeRuntime(scope)` from `aws-cdk-lib/aws-lambda` instead
+- **Lambda@Edge Versioning**: Uses `currentVersion` property for automatic version management with code hash changes
+  - CloudFront automatically updates to new versions when Lambda code changes
+  - No manual Version resources needed
+- **Region Requirements**: All infrastructure must be deployed to us-east-1 (required for CloudFront/Lambda@Edge)
+- **ACM Certificates**: CloudFront distributions require ACM certificates in us-east-1
+- **S3 Configuration**: Buckets use CloudFront Origin Access Control (OAC) with S3 REST API endpoints
+  - **DO NOT configure** S3 website hosting (`websiteIndexDocument`, `websiteErrorDocument`) - incompatible with OAC
+  - Lambda@Edge handles index.html rewriting instead
 
 ### Cost Optimization
 - S3 uses Intelligent-Tiering storage class automatically
 - CloudFront PriceClass.PRICE_CLASS_100 (North America and Europe only)
 - GitHub Actions free tier sufficient for most Hugo site builds
+
+## Common Issues and Solutions
+
+### CloudFront 403 Forbidden Error
+
+If the site returns 403 errors after deployment:
+
+1. **Check S3 bucket configuration**: Ensure website hosting is NOT enabled
+   - S3 website hosting is incompatible with CloudFront OAC
+   - Remove `websiteIndexDocument` and `websiteErrorDocument` properties
+
+2. **Verify Lambda@Edge function**: Check the redirect function handles root path correctly
+   - The regex must match `/` (root): use `/\/$/` not `.+/$`
+   - Access `currentVersion` to ensure Lambda version is created
+
+3. **Invalidate CloudFront cache**: Old 403 responses may be cached
+   ```bash
+   aws cloudfront create-invalidation --distribution-id <dist-id> --paths "/*"
+   ```
+
+4. **Check Lambda version**: Verify CloudFront uses the latest Lambda version
+   - `currentVersion` only creates versions when accessed
+   - Manual `Version` resources don't update with code changes
+
+### Lambda@Edge Not Using Latest Code
+
+If code changes don't appear after deployment:
+
+1. Ensure using `currentVersion` instead of manual `Version` resources
+2. The construct must extend `NodejsFunction` (not plain `Function`)
+3. CloudFront requires a few minutes to propagate Lambda@Edge updates to edge locations
+4. Invalidate CloudFront cache after Lambda updates
+
+### Runtime Selection Issues
+
+If you see "Module has no exported member 'getLatestNodeVersion'" or similar:
+
+- Use `determineLatestNodeRuntime(scope)` from `aws-cdk-lib/aws-lambda`
+- Do not use `Runtime.NODEJS_LATEST` directly (has known issues)
+- The function intelligently selects the appropriate runtime based on CDK feature flags
