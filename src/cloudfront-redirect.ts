@@ -1,12 +1,9 @@
 import { CompositePrincipal, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { Runtime, Version } from 'aws-cdk-lib/aws-lambda';
+import { determineLatestNodeRuntime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-// import { PolicyStatement, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 export class CloudfrontRedirect extends NodejsFunction {
-  readonly functionVersion: Version;
-
   constructor(scope: Construct) {
     const role = new Role(scope, 'CloudfrontRedirectRole', {
       assumedBy: new CompositePrincipal(
@@ -24,12 +21,7 @@ export class CloudfrontRedirect extends NodejsFunction {
         ],
       },
       role,
-      runtime: Runtime.NODEJS_22_X,
-    });
-
-    this.functionVersion = new Version(scope, 'RedirectLambdaVersion', {
-      lambda: this,
-      description: 'Version for CloudFront redirect function',
+      runtime: determineLatestNodeRuntime(scope),
     });
   }
 }

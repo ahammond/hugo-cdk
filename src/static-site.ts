@@ -99,7 +99,7 @@ export class StaticSite extends Construct implements IStaticSite {
         origin: S3BucketOrigin.withOriginAccessControl(this.bucket, {}),
         edgeLambdas: [
           {
-            functionVersion: lambda.functionVersion,
+            functionVersion: lambda.currentVersion,
             eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
           },
         ],

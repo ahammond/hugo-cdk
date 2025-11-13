@@ -18,7 +18,7 @@ export const handler = (event: any, _context: any, callback: any): void => {
 
   let prefixPath;
 
-  if (request.uri.match('.+/$')) {
+  if (request.uri.match(/\/$/)) {
     request.uri += 'index.html';
     callback(null, request);
   } else if ((prefixPath = request.uri.match('(.+)/index.html'))) {
