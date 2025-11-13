@@ -4,6 +4,8 @@ import {
 } from 'projen';
 import { GithubCDKPipeline } from 'projen-pipelines';
 
+const pnpmVersion = '10';
+
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: '@ahammond/hugo-cdk',
   authorName: 'Andrew Hammond',
@@ -105,7 +107,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   codeCov: true,
 
   packageManager: javascript.NodePackageManager.PNPM,
-  pnpmVersion: '9',
+  pnpmVersion,
   projenrcTs: true,
 });
 
@@ -272,5 +274,29 @@ new GithubCDKPipeline(project, {
     },
   ],
 });
+
+// Fix pnpm setup in deploy workflow
+// projen-pipelines doesn't automatically add pnpm setup steps, so we add them manually
+// The 'tools' property on jobs creates setup-node during synthesis, but we need pnpm setup before that
+// So we insert pnpm setup at the beginning of the steps array (after it's created but before synthesis)
+const deployWorkflow = project.github?.tryFindWorkflow('deploy');
+if (deployWorkflow) {
+  for (const jobName of ['synth', 'assetUpload', 'deploy-prod']) {
+    const job = deployWorkflow.getJob(jobName);
+    // Check if job has steps property (regular Job, not JobCallingReusableWorkflow)
+    if (job && 'steps' in job) {
+      const steps = job.steps;
+      // Insert pnpm setup at the very beginning (before all other steps)
+      // During synthesis, the tools.node property will add setup-node after this
+      steps.unshift({
+        name: 'Setup pnpm',
+        uses: 'pnpm/action-setup@v4',
+        with: {
+          version: pnpmVersion,
+        },
+      });
+    }
+  }
+}
 
 project.synth();
