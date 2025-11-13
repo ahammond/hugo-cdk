@@ -1,5 +1,5 @@
 export * from './cloudfront-redirect';
 export * from './github-oidc-bootstrap-stack';
-export * from './github-oidc-role';
+export * from './hugo-content-deployment-role';
 export * from './hugo-site';
 export * from './static-site';

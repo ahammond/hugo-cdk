@@ -17,8 +17,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   workflowNodeVersion: '22.19.0',
 
   context: {
-    // We aren't using aws-sdk v2 anywhere. Silence the warning.
     '@aws-cdk/aws-lambda-nodejs:sdkV2NotInRuntime': true,
+    '@aws-cdk/aws-lambda-nodejs:variableRuntimeExternals': true,
 
     // https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/cx-api/FEATURE_FLAGS.md#currently-recommended-cdkjson
     '@aws-cdk/aws-lambda:recognizeLayerVersion': true,

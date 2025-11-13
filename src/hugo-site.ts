@@ -1,6 +1,6 @@
 import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as githubOidc from './github-oidc-role';
+import * as hugoContentDeploymentRole from './hugo-content-deployment-role';
 import * as staticSite from './static-site';
 
 export interface HugoSiteStackProps extends staticSite.StaticSiteProps, StackProps {
@@ -18,7 +18,7 @@ export interface HugoSiteStackProps extends staticSite.StaticSiteProps, StackPro
 }
 
 export class HugoSiteStack extends Stack {
-  public readonly role: githubOidc.GitHubOIDCRole;
+  public readonly role: hugoContentDeploymentRole.HugoContentDeploymentRole;
   public readonly site: staticSite.StaticSite;
 
   constructor(scope: Construct, id: string, props: HugoSiteStackProps) {
@@ -26,7 +26,8 @@ export class HugoSiteStack extends Stack {
 
     this.site = new staticSite.StaticSite(this, `${props.siteName}Site`, props);
 
-    this.role = new githubOidc.GitHubOIDCRole(this, `${props.siteName}GitHubRole`, {
+    // Create GitHub OIDC role for Hugo content deployment
+    this.role = new hugoContentDeploymentRole.HugoContentDeploymentRole(this, `${props.siteName}GitHubRole`, {
       githubOrg: props.githubOrg,
       githubRepo: props.githubRepo || props.siteName,
       staticSite: this.site,

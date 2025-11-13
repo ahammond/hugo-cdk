@@ -1,0 +1,461 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GitHubOIDCBootstrapStack Snapshot Tests snapshot matches default configuration 1`] = `
+Object {
+  "Outputs": Object {
+    "DeploymentRoleArn": Object {
+      "Description": "ARN of the GitHub Actions deployment role",
+      "Export": Object {
+        "Name": "GitHubDeploymentRoleArn",
+      },
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "GitHubDeploymentRoleD4E2A70A",
+          "Arn",
+        ],
+      },
+    },
+    "OIDCProviderArn": Object {
+      "Description": "ARN of the GitHub OIDC provider",
+      "Export": Object {
+        "Name": "GitHubOIDCProviderArn",
+      },
+      "Value": Object {
+        "Ref": "GitHubOIDCProvider4F328116",
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": Object {
+      "DependsOn": Array [
+        "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb.zip",
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "iam:CreateOpenIDConnectProvider",
+                    "iam:DeleteOpenIDConnectProvider",
+                    "iam:UpdateOpenIDConnectProviderThumbprint",
+                    "iam:AddClientIDToOpenIDConnectProvider",
+                    "iam:RemoveClientIDFromOpenIDConnectProvider",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "Inline",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubDeploymentRoleD4E2A70A": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                },
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:testOrg/testRepo:*",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": Object {
+                  "Ref": "GitHubOIDCProvider4F328116",
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "GitHub Actions deployment role for testOrg/testRepo",
+        "MaxSessionDuration": 3600,
+        "RoleName": "GithubDeploymentRole",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubDeploymentRoleDefaultPolicy06E4309E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:iam::",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":role/cdk-*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "s3:*",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GitHubDeploymentRoleDefaultPolicy06E4309E",
+        "Roles": Array [
+          Object {
+            "Ref": "GitHubDeploymentRoleD4E2A70A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GitHubOIDCProvider4F328116": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ClientIDList": Array [
+          "sts.amazonaws.com",
+        ],
+        "CodeHash": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb",
+        "RejectUnauthorized": false,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0",
+            "Arn",
+          ],
+        },
+        "ThumbprintList": Array [
+          "6938fd4d98bab03faadb97b34396831e3780aea1",
+        ],
+        "Url": "https://token.actions.githubusercontent.com",
+      },
+      "Type": "Custom::AWSCDKOpenIdConnectProvider",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`GitHubOIDCBootstrapStack Snapshot Tests snapshot matches with branch restrictions 1`] = `
+Object {
+  "Outputs": Object {
+    "DeploymentRoleArn": Object {
+      "Description": "ARN of the GitHub Actions deployment role",
+      "Export": Object {
+        "Name": "GitHubDeploymentRoleArn",
+      },
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "GitHubDeploymentRoleD4E2A70A",
+          "Arn",
+        ],
+      },
+    },
+    "OIDCProviderArn": Object {
+      "Description": "ARN of the GitHub OIDC provider",
+      "Export": Object {
+        "Name": "GitHubOIDCProviderArn",
+      },
+      "Value": Object {
+        "Ref": "GitHubOIDCProvider4F328116",
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": Object {
+      "DependsOn": Array [
+        "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb.zip",
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "iam:CreateOpenIDConnectProvider",
+                    "iam:DeleteOpenIDConnectProvider",
+                    "iam:UpdateOpenIDConnectProviderThumbprint",
+                    "iam:AddClientIDToOpenIDConnectProvider",
+                    "iam:RemoveClientIDFromOpenIDConnectProvider",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "Inline",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubDeploymentRoleD4E2A70A": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                },
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:testOrg/testRepo:ref:refs/heads/main",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": Object {
+                  "Ref": "GitHubOIDCProvider4F328116",
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "GitHub Actions deployment role for testOrg/testRepo",
+        "MaxSessionDuration": 3600,
+        "RoleName": "GithubDeploymentRole",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GitHubDeploymentRoleDefaultPolicy06E4309E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:iam::",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":role/cdk-*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "s3:*",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "GitHubDeploymentRoleDefaultPolicy06E4309E",
+        "Roles": Array [
+          Object {
+            "Ref": "GitHubDeploymentRoleD4E2A70A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "GitHubOIDCProvider4F328116": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ClientIDList": Array [
+          "sts.amazonaws.com",
+        ],
+        "CodeHash": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb",
+        "RejectUnauthorized": false,
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0",
+            "Arn",
+          ],
+        },
+        "ThumbprintList": Array [
+          "6938fd4d98bab03faadb97b34396831e3780aea1",
+        ],
+        "Url": "https://token.actions.githubusercontent.com",
+      },
+      "Type": "Custom::AWSCDKOpenIdConnectProvider",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
