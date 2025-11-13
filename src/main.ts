@@ -5,22 +5,31 @@ import { HugoSiteStack } from '.';
 
 const commonProps = {
   env: {
-    account: '263869919117', // ahammond's AWS account ID. Use your own.
-    region: 'us-east-1', // Not sure what other regions will support all this.
+    account: process.env.CDK_DEFAULT_ACCOUNT || '263869919117', // Use CDK_DEFAULT_ACCOUNT or set your AWS account ID
+    region: 'us-east-1', // CloudFront distributions must be in us-east-1
   },
-  githubOrg: 'ahammond',
-  siteDomain: 'agh1973.com',
+  githubOrg: process.env.GITHUB_ORG || 'ahammond',
+  siteDomain: process.env.SITE_DOMAIN || 'agh1973.com',
 };
 
 const app = new App();
 
-// You can just add stanza after stanza to implement more sites.
+// Deploy Hugo sites with GitHub Actions OIDC authentication.
+// Each site creates:
+// - S3 bucket + CloudFront distribution
+// - IAM role that GitHub Actions can assume
+//
+// After deploying, the GitHub repo needs a workflow (see .github/workflows/deploy.yml.example)
+// that uses the role ARN output from this stack.
+
 new HugoSiteStack(app, 'Blog', {
   ...commonProps,
   siteName: 'blog',
+  allowedBranches: ['main'], // Restrict deployments to main branch
 });
 
 new HugoSiteStack(app, 'Food', {
   ...commonProps,
   siteName: 'food',
+  allowedBranches: ['main'],
 });

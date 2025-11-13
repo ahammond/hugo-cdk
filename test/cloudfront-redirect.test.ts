@@ -31,11 +31,7 @@ test('cloudfront-redirect basic functionality', () => {
         {
           'Fn::Join': [
             '',
-            [
-              'arn:',
-              { Ref: 'AWS::Partition' },
-              ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
-            ],
+            ['arn:', { Ref: 'AWS::Partition' }, ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'],
           ],
         },
       ],
@@ -49,7 +45,7 @@ test('cloudfront-redirect basic functionality', () => {
   const functions = template.findResources('AWS::Lambda::Function', {
     Properties: {
       Role: { 'Fn::GetAtt': [roleRef, 'Arn'] },
-      Runtime: 'nodejs20.x',
+      Runtime: 'nodejs22.x',
     },
   });
   expect(functions).toBeDefined();

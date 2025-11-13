@@ -1,18 +1,10 @@
 import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
-import {
-  Certificate,
-  CertificateValidation,
-} from 'aws-cdk-lib/aws-certificatemanager';
-import {
-  Distribution,
-  IDistribution,
-  LambdaEdgeEventType,
-  PriceClass,
-} from 'aws-cdk-lib/aws-cloudfront';
+import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import { Distribution, IDistribution, LambdaEdgeEventType, PriceClass } from 'aws-cdk-lib/aws-cloudfront';
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Bucket, BucketAccessControl, BucketEncryption, IBucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import { Bucket, BucketAccessControl, BucketEncryption, IBucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 import { CloudfrontRedirect } from './cloudfront-redirect';
@@ -83,11 +75,9 @@ export class StaticSite extends Construct implements IStaticSite {
 
     this.bucket = new Bucket(this, 'Bucket', {
       bucketName: fqdn,
-      encryption: BucketEncryption.S3_MANAGED, // https://aws.amazon.com/premiumsupport/knowledge-center/s3-website-cloudfront-error-403/
+      encryption: BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
       accessControl: BucketAccessControl.PRIVATE,
-      websiteIndexDocument: 'index.html',
-      websiteErrorDocument: '404.html',
     });
 
     // Grant the CloudFront OAI access to the bucket.

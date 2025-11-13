@@ -1,0 +1,154 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+This is an AWS CDK TypeScript application that deploys Hugo static sites to AWS with GitHub Actions for CI/CD. It creates a complete infrastructure stack that:
+- Provisions AWS infrastructure (S3, CloudFront, Route53, ACM certificates)
+- Creates IAM roles for GitHub Actions OIDC authentication
+- Enables automated Hugo site deployment via GitHub Actions workflows
+- Manages DNS, SSL certificates, and CloudFront edge lambdas for URL canonicalization
+
+## Development Commands
+
+This project uses **pnpm** as the package manager and **projen** for project management.
+
+### Essential Commands
+
+```bash
+# Install dependencies
+pnpm install
+
+# Compile TypeScript
+pnpm run build
+
+# Run tests
+pnpm run test
+
+# Run tests in watch mode
+pnpm run test:watch
+
+# Lint
+pnpm run eslint
+
+# CDK commands (use appropriate --profile flag if needed)
+pnpm run synth          # Synthesize CloudFormation templates
+pnpm run diff           # Compare deployed stack with current state
+pnpm run deploy         # Deploy all stacks
+pnpm run destroy        # Destroy all stacks
+
+# Bootstrap CDK (one-time per AWS account)
+npx cdk --profile personal bootstrap
+```
+
+### Projen Management
+
+This project is managed by projen. **DO NOT edit** the following files directly as they are auto-generated:
+- `package.json`
+- `tsconfig.json`
+- `cdk.json`
+- `.github/workflows/*`
+- `.gitignore`
+
+Instead, edit `.projenrc.ts` and run `pnpm run projen` to regenerate these files.
+
+## Architecture
+
+### Core Components
+
+The application is structured around three main CDK constructs:
+
+1. **HugoSiteStack** (`src/hugo-site.ts`): Top-level stack that orchestrates the entire Hugo site deployment. It combines a StaticSite and a GitHubOIDCRole, and exports CloudFormation outputs needed for GitHub Actions configuration.
+
+2. **StaticSite** (`src/static-site.ts`): Creates the hosting infrastructure:
+   - S3 bucket for static content with Intelligent-Tiering storage class
+   - CloudFront distribution with custom domain and SSL certificate (ACM)
+   - Route53 DNS records for the site domain
+   - Separate log bucket for CloudFront access logs
+   - Lambda@Edge function for URL canonicalization (redirecting directory URLs to index.html)
+
+3. **GitHubOIDCRole** (`src/github-oidc-role.ts`): Creates IAM resources for GitHub Actions authentication:
+   - OpenID Connect (OIDC) provider for token.actions.githubusercontent.com
+   - IAM role with trust policy restricting access to specific GitHub org/repo/branches
+   - S3 read/write permissions scoped to the site bucket
+   - CloudFront invalidation permissions for cache clearing
+   - No GitHub credentials stored in AWS - uses short-lived OIDC tokens instead
+
+4. **CloudfrontRedirect** (`src/cloudfront-redirect.ts`): Lambda@Edge function that handles URL canonicalization at the CloudFront edge. Companion implementation file: `src/cloudfront-redirect.cloudfront-redirect.ts`.
+
+### Configuration
+
+The entry point (`src/main.ts`) defines site-specific configuration including:
+- AWS account ID and region (supports environment variables: `CDK_DEFAULT_ACCOUNT`, `AWS_ACCOUNT_ID`)
+- GitHub organization (supports environment variable: `GITHUB_ORG`)
+- Site domain (supports environment variable: `SITE_DOMAIN`)
+- Individual site names and allowed deployment branches
+
+Multiple sites can be deployed by adding additional `HugoSiteStack` instances in `main.ts`.
+
+### Deployment Workflow
+
+1. **Deploy CDK Infrastructure**:
+   ```bash
+   pnpm projen build
+   pnpm run deploy
+   ```
+   This creates S3 buckets, CloudFront distributions, IAM roles, and outputs the values needed for GitHub Actions.
+
+2. **Configure GitHub Repository**:
+   - Copy `.github/workflows/deploy.yml.example` to your Hugo repository as `.github/workflows/deploy.yml`
+   - Set GitHub secrets from CDK outputs:
+     - `AWS_ROLE_ARN`: GitHubActionsRoleArn from stack outputs
+     - `AWS_S3_BUCKET`: S3BucketName from stack outputs
+     - `AWS_CLOUDFRONT_ID`: CloudFrontDistributionId from stack outputs
+   - See `.github/workflows/README.md` for detailed setup instructions
+
+3. **Deploy Hugo Site**:
+   Push to the configured branch (default: `main`) in your Hugo repository. GitHub Actions will:
+   - Build the Hugo site
+   - Authenticate to AWS via OIDC (no stored credentials)
+   - Sync content to S3
+   - Invalidate CloudFront cache
+
+### Prerequisites
+
+1. AWS CLI configured with appropriate profile
+2. Domain managed by AWS Route53
+3. Node.js 22+ and pnpm installed
+4. GitHub repository with Hugo site content
+
+## Testing
+
+Tests use Jest with ts-jest preset:
+- Test files: `test/*.test.ts`
+- Coverage reports generated in `coverage/`
+- Tests cover the main constructs: StaticSite, GitHubOIDCRole, and CloudfrontRedirect
+- Run tests with `pnpm projen test` (includes linting)
+
+## Important Notes
+
+### Architecture Decisions
+- **GitHub Actions over CodeBuild**: Uses GitHub Actions for CI/CD instead of AWS CodeBuild
+  - Free for public repos, 2,000 free minutes/month for private repos
+  - No AWS credentials storage - uses OIDC for authentication
+  - Build logs visible directly in GitHub PR UI
+  - Hugo version manageable per-repository via workflow files
+
+- **OIDC Authentication**: IAM roles use OpenID Connect for secure, credential-less authentication
+  - Short-lived tokens (15 minutes default)
+  - Trust policies restrict access to specific GitHub repos and branches
+  - No secrets management required
+
+- **Branch Configuration**: Default deployment branch is `main` (configurable via `allowedBranches` property)
+
+### Technical Requirements
+- Lambda@Edge requires specific IAM role configuration with both lambda.amazonaws.com and edgelambda.amazonaws.com principals
+- Lambda@Edge runtime: Node.js 22.x
+- All infrastructure must be deployed to us-east-1 (required for CloudFront/Lambda@Edge)
+- CloudFront distributions require ACM certificates in us-east-1
+
+### Cost Optimization
+- S3 uses Intelligent-Tiering storage class automatically
+- CloudFront PriceClass.PRICE_CLASS_100 (North America and Europe only)
+- GitHub Actions free tier sufficient for most Hugo site builds
