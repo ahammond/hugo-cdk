@@ -1,9 +1,15 @@
 import { Stack } from 'aws-cdk-lib';
-import { OpenIdConnectProvider, PolicyStatement, Role, WebIdentityPrincipal } from 'aws-cdk-lib/aws-iam';
+import {
+  IOpenIdConnectProvider,
+  OpenIdConnectProvider,
+  PolicyStatement,
+  Role,
+  WebIdentityPrincipal,
+} from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as staticSite from './static-site';
 
-export interface GitHubOIDCRoleProps {
+export interface HugoContentDeploymentRoleProps {
   /**
    * The GitHub organization or user that owns the repository
    */
@@ -21,28 +27,38 @@ export interface GitHubOIDCRoleProps {
    * @default - Allow all branches
    */
   readonly allowedBranches?: string[];
+  /**
+   * Optional: ARN of existing GitHub OIDC provider to use
+   * If not provided, imports the provider from the GitHubOIDCBootstrap stack export
+   * @default - Imports from GitHubOIDCProviderArn CloudFormation export
+   */
+  readonly oidcProviderArn?: string;
 }
 
 /**
  * Creates an IAM role that GitHub Actions can assume via OIDC
- * to deploy Hugo sites to S3 and invalidate CloudFront.
+ * to deploy Hugo site content to S3 and invalidate CloudFront.
+ *
+ * This is for CONTENT deployment from Hugo repos (e.g., ahammond/blog, ahammond/food).
+ * For INFRASTRUCTURE deployment (CDK stacks), see GitHubOIDCBootstrapStack.
  *
  * The GitHub Actions workflow must use the aws-actions/configure-aws-credentials action
  * with the role ARN and proper permissions.
  */
-export class GitHubOIDCRole extends Construct {
+export class HugoContentDeploymentRole extends Construct {
   public readonly role: Role;
-  public readonly provider: OpenIdConnectProvider;
+  public readonly provider: IOpenIdConnectProvider;
 
-  constructor(scope: Construct, id: string, props: GitHubOIDCRoleProps) {
+  constructor(scope: Construct, id: string, props: HugoContentDeploymentRoleProps) {
     super(scope, id);
 
-    // Get or create the GitHub OIDC provider
-    // Note: Only one provider needed per account, but CDK handles duplicate creation gracefully
-    this.provider = new OpenIdConnectProvider(this, 'GitHubOIDCProvider', {
-      url: 'https://token.actions.githubusercontent.com',
-      clientIds: ['sts.amazonaws.com'],
-    });
+    // Import the existing GitHub OIDC provider from the bootstrap stack
+    // The GitHubOIDCBootstrap stack exports this as 'GitHubOIDCProviderArn'
+    const providerArn =
+      props.oidcProviderArn ||
+      `arn:aws:iam::${Stack.of(this).account}:oidc-provider/token.actions.githubusercontent.com`;
+
+    this.provider = OpenIdConnectProvider.fromOpenIdConnectProviderArn(this, 'GitHubOIDCProvider', providerArn);
 
     // Build the subject claim based on allowed branches
     let subjectClaim: string;

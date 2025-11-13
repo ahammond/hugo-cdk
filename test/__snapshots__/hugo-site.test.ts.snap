@@ -1,0 +1,975 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HugoSiteStack Snapshot Tests snapshot matches default configuration 1`] = `
+Object {
+  "Mappings": Object {
+    "AWSCloudFrontPartitionHostedZoneIdMap": Object {
+      "aws": Object {
+        "zoneId": "Z2FDTNDATAQYW2",
+      },
+      "aws-cn": Object {
+        "zoneId": "Z3RFFRIM2A3IF5",
+      },
+    },
+  },
+  "Outputs": Object {
+    "CloudFrontDistributionId": Object {
+      "Description": "CloudFront distribution ID",
+      "Export": Object {
+        "Name": "TestBlog-CloudFrontDistributionId",
+      },
+      "Value": Object {
+        "Ref": "blogSiteDistributionF02D14DC",
+      },
+    },
+    "GitHubActionsRoleArn": Object {
+      "Description": "IAM Role ARN for GitHub Actions to assume",
+      "Export": Object {
+        "Name": "TestBlog-GitHubActionsRoleArn",
+      },
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "blogGitHubRoleGitHubActionsDeployRoleCBD26A8C",
+          "Arn",
+        ],
+      },
+    },
+    "S3BucketName": Object {
+      "Description": "S3 bucket name for site content",
+      "Export": Object {
+        "Name": "TestBlog-S3BucketName",
+      },
+      "Value": Object {
+        "Ref": "blogSiteBucket6627388D",
+      },
+    },
+    "SiteUrl": Object {
+      "Description": "Site URL",
+      "Value": "https://blog.example.com",
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "blogGitHubRoleGitHubActionsDeployRoleCBD26A8C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                },
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:testOrg/blog:ref:refs/heads/main",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Allows GitHub Actions in testOrg/blog to deploy Hugo sites",
+        "RoleName": "github-actions-blog-deploy",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "blogGitHubRoleGitHubActionsDeployRoleDefaultPolicyA113B7C2": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "blogSiteBucket6627388D",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "blogSiteBucket6627388D",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "cloudfront:CreateInvalidation",
+                "cloudfront:GetInvalidation",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:cloudfront::123456789012:distribution/",
+                    Object {
+                      "Ref": "blogSiteDistributionF02D14DC",
+                    },
+                  ],
+                ],
+              },
+              "Sid": "AllowCloudFrontInvalidation",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "blogGitHubRoleGitHubActionsDeployRoleDefaultPolicyA113B7C2",
+        "Roles": Array [
+          Object {
+            "Ref": "blogGitHubRoleGitHubActionsDeployRoleCBD26A8C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "blogSiteBucket6627388D": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccessControl": "Private",
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "BucketName": "blog.example.com",
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "blogSiteBucketPolicy30243FB0": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "blogSiteBucket6627388D",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "AWS:SourceArn": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:",
+                        Object {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":cloudfront::",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":distribution/",
+                        Object {
+                          "Ref": "blogSiteDistributionF02D14DC",
+                        },
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "cloudfront.amazonaws.com",
+              },
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "blogSiteBucket6627388D",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "blogSiteCertificate821A5B4B": Object {
+      "Properties": Object {
+        "DomainName": "blog.example.com",
+        "DomainValidationOptions": Array [
+          Object {
+            "DomainName": "blog.example.com",
+            "HostedZoneId": "DUMMY",
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestBlog/blogSite/Certificate",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "blogSiteCloudfrontRedirectRole97D68716": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "edgelambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "blogSiteDistributionF02D14DC": Object {
+      "Properties": Object {
+        "DistributionConfig": Object {
+          "Aliases": Array [
+            "blog.example.com",
+          ],
+          "CustomErrorResponses": Array [
+            Object {
+              "ErrorCode": 404,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/404.html",
+            },
+          ],
+          "DefaultCacheBehavior": Object {
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "Compress": true,
+            "LambdaFunctionAssociations": Array [
+              Object {
+                "EventType": "origin-request",
+                "LambdaFunctionARN": Object {
+                  "Ref": "blogSitecloudfrontredirectCurrentVersion30857C2B3f462d5bf3473516bc7a34a95cf6fa5f",
+                },
+              },
+            ],
+            "TargetOriginId": "TestBlogblogSiteDistributionOrigin1DF526AB8",
+            "ViewerProtocolPolicy": "allow-all",
+          },
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Logging": Object {
+            "Bucket": Object {
+              "Fn::GetAtt": Array [
+                "blogSiteLogBucketFC84A3A3",
+                "RegionalDomainName",
+              ],
+            },
+          },
+          "Origins": Array [
+            Object {
+              "DomainName": Object {
+                "Fn::GetAtt": Array [
+                  "blogSiteBucket6627388D",
+                  "RegionalDomainName",
+                ],
+              },
+              "Id": "TestBlogblogSiteDistributionOrigin1DF526AB8",
+              "OriginAccessControlId": Object {
+                "Fn::GetAtt": Array [
+                  "blogSiteDistributionOrigin1S3OriginAccessControlBBF33E90",
+                  "Id",
+                ],
+              },
+              "S3OriginConfig": Object {
+                "OriginAccessIdentity": "",
+              },
+            },
+          ],
+          "PriceClass": "PriceClass_100",
+          "ViewerCertificate": Object {
+            "AcmCertificateArn": Object {
+              "Ref": "blogSiteCertificate821A5B4B",
+            },
+            "MinimumProtocolVersion": "TLSv1.2_2021",
+            "SslSupportMethod": "sni-only",
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "blogSiteDistributionOrigin1S3OriginAccessControlBBF33E90": Object {
+      "Properties": Object {
+        "OriginAccessControlConfig": Object {
+          "Name": "TestBlogblogSiteDistributionOrigin1S3OriginAccessControlAF40440E",
+          "OriginAccessControlOriginType": "s3",
+          "SigningBehavior": "always",
+          "SigningProtocol": "sigv4",
+        },
+      },
+      "Type": "AWS::CloudFront::OriginAccessControl",
+    },
+    "blogSiteLogBucketFC84A3A3": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "BucketName": "blog.example.com-logs",
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "ExpirationInDays": 10,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "OwnershipControls": Object {
+          "Rules": Array [
+            Object {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "blogSiteSiteAlias659685FE": Object {
+      "Properties": Object {
+        "AliasTarget": Object {
+          "DNSName": Object {
+            "Fn::GetAtt": Array [
+              "blogSiteDistributionF02D14DC",
+              "DomainName",
+            ],
+          },
+          "HostedZoneId": Object {
+            "Fn::FindInMap": Array [
+              "AWSCloudFrontPartitionHostedZoneIdMap",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              "zoneId",
+            ],
+          },
+        },
+        "HostedZoneId": "DUMMY",
+        "Name": "blog.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "blogSitecloudfrontredirect7AA34D3A": Object {
+      "DependsOn": Array [
+        "blogSiteCloudfrontRedirectRole97D68716",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "a0c2b77b3fb6bef295a42493077523b1f7c64946b1864fead8eb3a09ee366f56.zip",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "blogSiteCloudfrontRedirectRole97D68716",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "blogSitecloudfrontredirectCurrentVersion30857C2B3f462d5bf3473516bc7a34a95cf6fa5f": Object {
+      "Metadata": Object {
+        "aws:cdk:do-not-refactor": true,
+      },
+      "Properties": Object {
+        "FunctionName": Object {
+          "Ref": "blogSitecloudfrontredirect7AA34D3A",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`HugoSiteStack Snapshot Tests snapshot matches with custom githubRepo and branches 1`] = `
+Object {
+  "Mappings": Object {
+    "AWSCloudFrontPartitionHostedZoneIdMap": Object {
+      "aws": Object {
+        "zoneId": "Z2FDTNDATAQYW2",
+      },
+      "aws-cn": Object {
+        "zoneId": "Z3RFFRIM2A3IF5",
+      },
+    },
+  },
+  "Outputs": Object {
+    "CloudFrontDistributionId": Object {
+      "Description": "CloudFront distribution ID",
+      "Export": Object {
+        "Name": "TestBlog-CloudFrontDistributionId",
+      },
+      "Value": Object {
+        "Ref": "blogSiteDistributionF02D14DC",
+      },
+    },
+    "GitHubActionsRoleArn": Object {
+      "Description": "IAM Role ARN for GitHub Actions to assume",
+      "Export": Object {
+        "Name": "TestBlog-GitHubActionsRoleArn",
+      },
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "blogGitHubRoleGitHubActionsDeployRoleCBD26A8C",
+          "Arn",
+        ],
+      },
+    },
+    "S3BucketName": Object {
+      "Description": "S3 bucket name for site content",
+      "Export": Object {
+        "Name": "TestBlog-S3BucketName",
+      },
+      "Value": Object {
+        "Ref": "blogSiteBucket6627388D",
+      },
+    },
+    "SiteUrl": Object {
+      "Description": "Site URL",
+      "Value": "https://blog.example.com",
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "blogGitHubRoleGitHubActionsDeployRoleCBD26A8C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                },
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:testOrg/my-blog-repo:ref:refs/heads/main,repo:testOrg/my-blog-repo:ref:refs/heads/staging",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Allows GitHub Actions in testOrg/my-blog-repo to deploy Hugo sites",
+        "RoleName": "github-actions-my-blog-repo-deploy",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "blogGitHubRoleGitHubActionsDeployRoleDefaultPolicyA113B7C2": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "blogSiteBucket6627388D",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "blogSiteBucket6627388D",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "cloudfront:CreateInvalidation",
+                "cloudfront:GetInvalidation",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:cloudfront::123456789012:distribution/",
+                    Object {
+                      "Ref": "blogSiteDistributionF02D14DC",
+                    },
+                  ],
+                ],
+              },
+              "Sid": "AllowCloudFrontInvalidation",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "blogGitHubRoleGitHubActionsDeployRoleDefaultPolicyA113B7C2",
+        "Roles": Array [
+          Object {
+            "Ref": "blogGitHubRoleGitHubActionsDeployRoleCBD26A8C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "blogSiteBucket6627388D": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccessControl": "Private",
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "BucketName": "blog.example.com",
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "blogSiteBucketPolicy30243FB0": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "blogSiteBucket6627388D",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "AWS:SourceArn": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:",
+                        Object {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":cloudfront::",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":distribution/",
+                        Object {
+                          "Ref": "blogSiteDistributionF02D14DC",
+                        },
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "cloudfront.amazonaws.com",
+              },
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "blogSiteBucket6627388D",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "blogSiteCertificate821A5B4B": Object {
+      "Properties": Object {
+        "DomainName": "blog.example.com",
+        "DomainValidationOptions": Array [
+          Object {
+            "DomainName": "blog.example.com",
+            "HostedZoneId": "DUMMY",
+          },
+        ],
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "TestBlog/blogSite/Certificate",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+    },
+    "blogSiteCloudfrontRedirectRole97D68716": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "edgelambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "blogSiteDistributionF02D14DC": Object {
+      "Properties": Object {
+        "DistributionConfig": Object {
+          "Aliases": Array [
+            "blog.example.com",
+          ],
+          "CustomErrorResponses": Array [
+            Object {
+              "ErrorCode": 404,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/404.html",
+            },
+          ],
+          "DefaultCacheBehavior": Object {
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "Compress": true,
+            "LambdaFunctionAssociations": Array [
+              Object {
+                "EventType": "origin-request",
+                "LambdaFunctionARN": Object {
+                  "Ref": "blogSitecloudfrontredirectCurrentVersion30857C2B3f462d5bf3473516bc7a34a95cf6fa5f",
+                },
+              },
+            ],
+            "TargetOriginId": "TestBlogblogSiteDistributionOrigin1DF526AB8",
+            "ViewerProtocolPolicy": "allow-all",
+          },
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Logging": Object {
+            "Bucket": Object {
+              "Fn::GetAtt": Array [
+                "blogSiteLogBucketFC84A3A3",
+                "RegionalDomainName",
+              ],
+            },
+          },
+          "Origins": Array [
+            Object {
+              "DomainName": Object {
+                "Fn::GetAtt": Array [
+                  "blogSiteBucket6627388D",
+                  "RegionalDomainName",
+                ],
+              },
+              "Id": "TestBlogblogSiteDistributionOrigin1DF526AB8",
+              "OriginAccessControlId": Object {
+                "Fn::GetAtt": Array [
+                  "blogSiteDistributionOrigin1S3OriginAccessControlBBF33E90",
+                  "Id",
+                ],
+              },
+              "S3OriginConfig": Object {
+                "OriginAccessIdentity": "",
+              },
+            },
+          ],
+          "PriceClass": "PriceClass_100",
+          "ViewerCertificate": Object {
+            "AcmCertificateArn": Object {
+              "Ref": "blogSiteCertificate821A5B4B",
+            },
+            "MinimumProtocolVersion": "TLSv1.2_2021",
+            "SslSupportMethod": "sni-only",
+          },
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "blogSiteDistributionOrigin1S3OriginAccessControlBBF33E90": Object {
+      "Properties": Object {
+        "OriginAccessControlConfig": Object {
+          "Name": "TestBlogblogSiteDistributionOrigin1S3OriginAccessControlAF40440E",
+          "OriginAccessControlOriginType": "s3",
+          "SigningBehavior": "always",
+          "SigningProtocol": "sigv4",
+        },
+      },
+      "Type": "AWS::CloudFront::OriginAccessControl",
+    },
+    "blogSiteLogBucketFC84A3A3": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "BucketName": "blog.example.com-logs",
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "ExpirationInDays": 10,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "OwnershipControls": Object {
+          "Rules": Array [
+            Object {
+              "ObjectOwnership": "ObjectWriter",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "blogSiteSiteAlias659685FE": Object {
+      "Properties": Object {
+        "AliasTarget": Object {
+          "DNSName": Object {
+            "Fn::GetAtt": Array [
+              "blogSiteDistributionF02D14DC",
+              "DomainName",
+            ],
+          },
+          "HostedZoneId": Object {
+            "Fn::FindInMap": Array [
+              "AWSCloudFrontPartitionHostedZoneIdMap",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              "zoneId",
+            ],
+          },
+        },
+        "HostedZoneId": "DUMMY",
+        "Name": "blog.example.com.",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "blogSitecloudfrontredirect7AA34D3A": Object {
+      "DependsOn": Array [
+        "blogSiteCloudfrontRedirectRole97D68716",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "a0c2b77b3fb6bef295a42493077523b1f7c64946b1864fead8eb3a09ee366f56.zip",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "blogSiteCloudfrontRedirectRole97D68716",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "blogSitecloudfrontredirectCurrentVersion30857C2B3f462d5bf3473516bc7a34a95cf6fa5f": Object {
+      "Metadata": Object {
+        "aws:cdk:do-not-refactor": true,
+      },
+      "Properties": Object {
+        "FunctionName": Object {
+          "Ref": "blogSitecloudfrontredirect7AA34D3A",
+        },
+      },
+      "Type": "AWS::Lambda::Version",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

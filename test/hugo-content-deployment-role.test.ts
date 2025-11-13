@@ -4,7 +4,7 @@ import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import * as CuT from '../src';
 
-describe('GitHubOIDCRole', () => {
+describe('HugoContentDeploymentRole', () => {
   let app: App;
   let stack: Stack;
   let template: Template;
@@ -15,7 +15,7 @@ describe('GitHubOIDCRole', () => {
       env: { account: '123456789012', region: 'us-east-1' },
     });
 
-    new CuT.GitHubOIDCRole(stack, 'TestRole', {
+    new CuT.HugoContentDeploymentRole(stack, 'TestRole', {
       githubOrg: 'testOrg',
       githubRepo: 'testRepo',
       staticSite: {
@@ -34,11 +34,10 @@ describe('GitHubOIDCRole', () => {
     template = Template.fromStack(stack);
   });
 
-  test('creates OIDC provider', () => {
-    template.hasResourceProperties('Custom::AWSCDKOpenIdConnectProvider', {
-      Url: 'https://token.actions.githubusercontent.com',
-      ClientIDList: ['sts.amazonaws.com'],
-    });
+  test('imports existing OIDC provider (not created)', () => {
+    // The OIDC provider is imported, not created, so it should NOT appear in the template
+    const resources = template.findResources('Custom::AWSCDKOpenIdConnectProvider');
+    expect(Object.keys(resources).length).toBe(0);
   });
 
   test('creates IAM role with correct trust policy', () => {
