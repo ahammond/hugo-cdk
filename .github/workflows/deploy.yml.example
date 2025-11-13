@@ -1,7 +1,6 @@
 # GitHub Actions workflow for deploying Hugo sites to AWS
 #
-# Copy this file to your Hugo repository as .github/workflows/deploy.yml
-# and update the configuration values below.
+# This workflow uses mise for tool version management (Hugo version defined in mise.toml)
 #
 # Prerequisites:
 # 1. Deploy the hugo-cdk stack to create the S3 bucket, CloudFront distribution, and IAM role
@@ -17,7 +16,7 @@ name: Deploy Hugo Site
 on:
   push:
     branches:
-      - main  # Change to 'master' if that's your default branch
+      - main
   pull_request:
     branches:
       - main
@@ -38,14 +37,13 @@ jobs:
           submodules: recursive  # Fetch Hugo themes
           fetch-depth: 0         # Fetch all history for .GitInfo and .Lastmod
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+      - name: Setup mise
+        uses: jdx/mise-action@v2
         with:
-          hugo-version: '0.139.3'  # Update to latest version as needed
-          extended: true            # Use extended version for SCSS/Sass support
+          experimental: true
 
       - name: Build site
-        run: hugo --minify
+        run: mise run build --minify
         env:
           HUGO_ENV: production
 
@@ -72,7 +70,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
           role-session-name: GitHubActions-${{ github.run_id }}
 
@@ -83,18 +81,10 @@ jobs:
             --no-progress \
             --sse AES256 \
             --storage-class INTELLIGENT_TIERING \
-            public/ s3://${{ secrets.AWS_S3_BUCKET }}/
+            public/ s3://${{ vars.AWS_S3_BUCKET }}/
 
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} \
+            --distribution-id ${{ vars.AWS_CLOUDFRONT_ID }} \
             --paths "/*"
-
-      - name: Deployment summary
-        run: |
-          echo "✅ Site deployed successfully!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **S3 Bucket**: ${{ secrets.AWS_S3_BUCKET }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **CloudFront Distribution**: ${{ secrets.AWS_CLOUDFRONT_ID }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
