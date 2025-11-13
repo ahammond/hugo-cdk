@@ -73,32 +73,43 @@
         }
       ]
     },
-    "deploy": {
-      "name": "deploy",
-      "description": "Deploys your CDK app to the AWS cloud",
+    "deploy:personal": {
+      "name": "deploy:personal",
       "steps": [
         {
-          "exec": "cdk deploy",
-          "receiveArgs": true
+          "exec": "cdk deploy --outputs-file cdk-outputs-personal.json HugoCDK-personal"
         }
       ]
     },
-    "destroy": {
-      "name": "destroy",
-      "description": "Destroys your cdk app in the AWS cloud",
+    "deploy:prod": {
+      "name": "deploy:prod",
       "steps": [
         {
-          "exec": "cdk destroy",
-          "receiveArgs": true
+          "exec": "cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never deploy HugoCDK-prod"
         }
       ]
     },
-    "diff": {
-      "name": "diff",
-      "description": "Diffs the currently deployed app against your code",
+    "destroy:personal": {
+      "name": "destroy:personal",
       "steps": [
         {
-          "exec": "cdk diff"
+          "exec": "cdk destroy HugoCDK-personal"
+        }
+      ]
+    },
+    "diff:personal": {
+      "name": "diff:personal",
+      "steps": [
+        {
+          "exec": "cdk diff HugoCDK-personal"
+        }
+      ]
+    },
+    "diff:prod": {
+      "name": "diff:prod",
+      "steps": [
+        {
+          "exec": "cdk --app cdk.out diff HugoCDK-prod"
         }
       ]
     },
@@ -125,6 +136,22 @@
         {
           "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern $@ src test build-tools projenrc .projenrc.ts",
           "receiveArgs": true
+        }
+      ]
+    },
+    "fastdiff:personal": {
+      "name": "fastdiff:personal",
+      "steps": [
+        {
+          "exec": "cdk diff --no-changeset HugoCDK-personal"
+        }
+      ]
+    },
+    "fastdiff:prod": {
+      "name": "fastdiff:prod",
+      "steps": [
+        {
+          "exec": "cdk --app cdk.out diff --no-changeset HugoCDK-prod"
         }
       ]
     },
@@ -167,10 +194,29 @@
       "name": "pre-compile",
       "description": "Prepare the project for compilation"
     },
+    "publish:assets": {
+      "name": "publish:assets",
+      "steps": [
+        {
+          "spawn": "publish:assets:prod"
+        }
+      ]
+    },
+    "publish:assets:prod": {
+      "name": "publish:assets:prod",
+      "steps": [
+        {
+          "exec": "npx cdk-assets -p cdk.out/HugoCDK-prod.assets.json publish"
+        }
+      ]
+    },
     "synth": {
       "name": "synth",
       "description": "Synthesizes your cdk app into cdk.out",
       "steps": [
+        {
+          "exec": "rm -rf cdk.out"
+        },
         {
           "exec": "cdk synth"
         }
@@ -180,6 +226,9 @@
       "name": "synth:silent",
       "description": "Synthesizes your cdk app into cdk.out and suppresses the template in stdout (part of \"yarn build\")",
       "steps": [
+        {
+          "exec": "rm -rf cdk.out"
+        },
         {
           "exec": "cdk synth -q"
         }
@@ -215,13 +264,13 @@
       },
       "steps": [
         {
-          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/aws-lambda,@types/jest,codecov,esbuild,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,jsii-release,prettier,projen,ts-jest,ts-node,aws-lambda,source-map-support"
+          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/aws-lambda,@types/jest,@types/standard-version,cdk-assets,codecov,esbuild,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,jsii-release,prettier,projen,projen-pipelines,standard-version,ts-jest,ts-node,aws-lambda,source-map-support"
         },
         {
           "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "pnpm update @types/aws-lambda @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk codecov esbuild eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit jsii-release prettier projen ts-jest ts-node typescript aws-cdk-lib aws-lambda constructs source-map-support"
+          "exec": "pnpm update @types/aws-lambda @types/jest @types/node @types/standard-version @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk cdk-assets codecov esbuild eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit jsii-release prettier projen projen-pipelines standard-version ts-jest ts-node typescript aws-cdk-lib aws-lambda constructs source-map-support"
         },
         {
           "exec": "npx projen"
@@ -231,15 +280,11 @@
         }
       ]
     },
-    "watch": {
-      "name": "watch",
-      "description": "Watches changes in your source code and rebuilds and deploys to the current account",
+    "watch:personal": {
+      "name": "watch:personal",
       "steps": [
         {
-          "exec": "cdk deploy --hotswap"
-        },
-        {
-          "exec": "cdk watch"
+          "exec": "cdk deploy --outputs-file cdk-outputs-personal.json --watch --hotswap HugoCDK-personal"
         }
       ]
     }

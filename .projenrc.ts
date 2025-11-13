@@ -2,6 +2,7 @@ import {
   awscdk,
   javascript, //FileBase,, TextFile, YamlFile
 } from 'projen';
+import { GithubCDKPipeline } from 'projen-pipelines';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: '@ahammond/hugo-cdk',
@@ -81,6 +82,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     'codecov',
     'jsii-release',
     'prettier',
+    'projen-pipelines',
   ],
   // jsiiVersion: '~5.3.0',
   typescriptVersion: '~5.3.0',
@@ -234,5 +236,41 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 //     verbose: true,
 //   },
 // });
+
+// Configure Projen Pipelines for automated CDK deployment
+// This will generate GitHub Actions workflows for:
+// - Personal stacks (for testing)
+// - Production deployment
+new GithubCDKPipeline(project, {
+  stackPrefix: 'HugoCDK',
+  branchName: 'main',
+
+  // IAM role for GitHub Actions OIDC authentication
+  // This role needs to be created in your AWS account
+  // See docs/BOOTSTRAP.md for setup instructions
+  iamRoleArns: {
+    default: process.env.GITHUB_DEPLOYMENT_ROLE_ARN || 'arn:aws:iam::263869919117:role/GithubDeploymentRole',
+  },
+
+  // Personal stage for developer testing
+  // Usage: npx projen deploy:personal
+  personalStage: {
+    env: {
+      account: '263869919117', // Your AWS account
+      region: 'us-east-1', // Must be us-east-1 for CloudFront
+    },
+  },
+
+  // Production deployment stage
+  stages: [
+    {
+      name: 'prod',
+      env: {
+        account: '263869919117',
+        region: 'us-east-1',
+      },
+    },
+  ],
+});
 
 project.synth();

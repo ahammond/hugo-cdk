@@ -4,6 +4,7 @@
     ".gitattributes",
     ".github/pull_request_template.md",
     ".github/workflows/build.yml",
+    ".github/workflows/deploy.yml",
     ".github/workflows/pull-request-lint.yml",
     ".github/workflows/upgrade.yml",
     ".gitignore",
@@ -17,6 +18,7 @@
     ".projen/tasks.json",
     "cdk.json",
     "LICENSE",
+    "src/app.ts",
     "tsconfig.dev.json",
     "tsconfig.json"
   ],
