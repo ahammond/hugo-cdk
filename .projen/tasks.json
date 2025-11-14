@@ -77,7 +77,7 @@
       "name": "deploy:prod",
       "steps": [
         {
-          "exec": "cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never deploy \"HugoCDK-prod/*\""
+          "exec": "cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never --concurrency 10 deploy \"HugoCDK-prod/*\""
         }
       ]
     },
