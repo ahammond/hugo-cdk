@@ -240,9 +240,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 // });
 
 // Configure Projen Pipelines for automated CDK deployment
-// This will generate GitHub Actions workflows for:
-// - Personal stacks (for testing)
-// - Production deployment
+// This will generate GitHub Actions workflows for production deployment only
 new GithubCDKPipeline(project, {
   stackPrefix: 'HugoCDK',
   branchName: 'main',
@@ -252,15 +250,6 @@ new GithubCDKPipeline(project, {
   // See docs/BOOTSTRAP.md for setup instructions
   iamRoleArns: {
     default: process.env.GITHUB_DEPLOYMENT_ROLE_ARN || 'arn:aws:iam::263869919117:role/GithubDeploymentRole',
-  },
-
-  // Personal stage for developer testing
-  // Usage: npx projen deploy:personal
-  personalStage: {
-    env: {
-      account: '263869919117', // Your AWS account
-      region: 'us-east-1', // Must be us-east-1 for CloudFront
-    },
   },
 
   // Production deployment stage
@@ -276,6 +265,7 @@ new GithubCDKPipeline(project, {
 });
 
 // Fix pnpm setup in deploy workflow
+// See https://github.com/open-constructs/projen-pipelines/issues/161 (fix is in, pending release)
 // projen-pipelines doesn't automatically add pnpm setup steps, so we add them manually
 // The 'tools' property on jobs creates setup-node during synthesis, but we need pnpm setup before that
 // So we insert pnpm setup at the beginning of the steps array (after it's created but before synthesis)
@@ -298,5 +288,14 @@ if (deployWorkflow) {
     }
   }
 }
+
+// Override deploy tasks to deploy all nested stacks using wildcard pattern
+// projen-pipelines by default only deploys the parent stack (HugoCDK-prod)
+// but we have nested stacks (Blog, Food) that need to be deployed too
+project.tasks
+  .tryFind('deploy:prod')
+  ?.reset(
+    'cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never deploy "HugoCDK-prod/*"',
+  );
 
 project.synth();

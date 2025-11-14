@@ -73,35 +73,11 @@
         }
       ]
     },
-    "deploy:personal": {
-      "name": "deploy:personal",
-      "steps": [
-        {
-          "exec": "cdk deploy --outputs-file cdk-outputs-personal.json HugoCDK-personal"
-        }
-      ]
-    },
     "deploy:prod": {
       "name": "deploy:prod",
       "steps": [
         {
-          "exec": "cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never deploy HugoCDK-prod"
-        }
-      ]
-    },
-    "destroy:personal": {
-      "name": "destroy:personal",
-      "steps": [
-        {
-          "exec": "cdk destroy HugoCDK-personal"
-        }
-      ]
-    },
-    "diff:personal": {
-      "name": "diff:personal",
-      "steps": [
-        {
-          "exec": "cdk diff HugoCDK-personal"
+          "exec": "cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never deploy \"HugoCDK-prod/*\""
         }
       ]
     },
@@ -136,14 +112,6 @@
         {
           "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern $@ src test build-tools projenrc .projenrc.ts",
           "receiveArgs": true
-        }
-      ]
-    },
-    "fastdiff:personal": {
-      "name": "fastdiff:personal",
-      "steps": [
-        {
-          "exec": "cdk diff --no-changeset HugoCDK-personal"
         }
       ]
     },
@@ -277,14 +245,6 @@
         },
         {
           "spawn": "post-upgrade"
-        }
-      ]
-    },
-    "watch:personal": {
-      "name": "watch:personal",
-      "steps": [
-        {
-          "exec": "cdk deploy --outputs-file cdk-outputs-personal.json --watch --hotswap HugoCDK-personal"
         }
       ]
     }

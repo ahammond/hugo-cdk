@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/andrewhammond/Documents/ahammond/blog/.github/workflows/**)",
+      "Read(//Users/andrewhammond/Documents/ahammond/blog/**)",
+      "WebFetch(domain:blog.agh1973.com)",
+      "Bash(pnpm run build:*)",
+      "Bash(aws cloudfront list-distributions:*)",
+      "Bash(pnpm cdk deploy:*)",
+      "Bash(pnpm run test:*)",
+      "Bash(aws cloudformation list-stacks:*)",
+      "Bash(column:*)",
+      "WebFetch(domain:projen.io)",
+      "Read(//Users/andrewhammond/Documents/ahammond/projen-pipelines/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

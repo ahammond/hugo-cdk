@@ -65,6 +65,7 @@ export class StaticSite extends Construct implements IStaticSite {
       bucketName: `${fqdn}-logs`,
       encryption: BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
       objectOwnership: ObjectOwnership.OBJECT_WRITER,
       lifecycleRules: [
         {
@@ -77,6 +78,7 @@ export class StaticSite extends Construct implements IStaticSite {
       bucketName: fqdn,
       encryption: BucketEncryption.S3_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
       accessControl: BucketAccessControl.PRIVATE,
     });
 
