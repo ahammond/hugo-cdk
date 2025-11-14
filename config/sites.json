@@ -1,0 +1,19 @@
+{
+  "$schema": "./sites.schema.json",
+  "sites": [
+    {
+      "name": "Blog",
+      "domain": "blog.agh1973.com",
+      "githubOrg": "ahammond",
+      "githubRepo": "blog",
+      "allowedBranches": ["main"]
+    },
+    {
+      "name": "Food",
+      "domain": "food.agh1973.com",
+      "githubOrg": "ahammond",
+      "githubRepo": "food",
+      "allowedBranches": ["main"]
+    }
+  ]
+}

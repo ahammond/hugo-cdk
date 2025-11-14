@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/ahammond/hugo-cdk/main/config/sites.schema.json",
+  "title": "Hugo CDK Sites Configuration",
+  "description": "Configuration for Hugo static sites deployed via CDK",
+  "type": "object",
+  "required": ["sites"],
+  "properties": {
+    "sites": {
+      "type": "array",
+      "description": "List of Hugo sites to deploy",
+      "items": {
+        "type": "object",
+        "required": ["name", "domain", "githubOrg", "githubRepo"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Site name (used as CDK stack prefix and CloudFormation export prefix)",
+            "pattern": "^[A-Z][a-zA-Z0-9]*$",
+            "examples": ["Blog", "Food", "Portfolio"]
+          },
+          "domain": {
+            "type": "string",
+            "description": "Fully qualified domain name for the site",
+            "format": "hostname",
+            "examples": ["blog.example.com", "www.example.com"]
+          },
+          "githubOrg": {
+            "type": "string",
+            "description": "GitHub organization or username",
+            "pattern": "^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$",
+            "examples": ["ahammond", "my-org"]
+          },
+          "githubRepo": {
+            "type": "string",
+            "description": "GitHub repository name (without organization)",
+            "pattern": "^[a-zA-Z0-9._-]+$",
+            "examples": ["blog", "hugo-site", "my-website"]
+          },
+          "allowedBranches": {
+            "type": "array",
+            "description": "List of branches allowed to deploy (defaults to ['main'])",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9/_.-]+$"
+            },
+            "default": ["main"],
+            "examples": [["main"], ["main", "develop"]]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
