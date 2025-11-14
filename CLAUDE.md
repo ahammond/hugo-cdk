@@ -85,7 +85,7 @@ The application is structured around three main CDK constructs:
 
 4. **CloudfrontRedirect** (`src/cloudfront-redirect.ts`): Lambda@Edge function that handles URL canonicalization at the CloudFront edge. Companion implementation file: `src/cloudfront-redirect.cloudfront-redirect.ts`.
    - Extends `NodejsFunction` for TypeScript bundling with esbuild
-   - Uses `determineLatestNodeRuntime(scope)` for runtime selection
+   - Uses `determineLatestNodeRuntime(scope)` for automatic runtime selection
    - Automatically handles index.html rewriting for directory paths (including root `/`)
    - Uses `currentVersion` for automatic Lambda version management
 
@@ -156,9 +156,10 @@ Tests use Jest with ts-jest preset:
 
 ### Technical Requirements
 - **Lambda@Edge IAM**: Requires specific IAM role configuration with both `lambda.amazonaws.com` and `edgelambda.amazonaws.com` principals
-- **Lambda@Edge Runtime**: Uses `determineLatestNodeRuntime()` function to automatically select the latest supported Node.js runtime (currently Node.js 22.x)
-  - **DO NOT use** `Runtime.NODEJS_LATEST` directly - it has known issues
-  - Use `determineLatestNodeRuntime(scope)` from `aws-cdk-lib/aws-lambda` instead
+- **Lambda@Edge Runtime**: Uses `determineLatestNodeRuntime(scope)` for automatic runtime version management
+  - Automatically selects the latest supported Node.js runtime
+  - CDK warnings about NODEJS_LATEST are acknowledged via `Annotations.acknowledgeWarning()`
+  - This avoids manual maintenance of specific runtime versions
 - **Lambda@Edge Versioning**: Uses `currentVersion` property for automatic version management with code hash changes
   - CloudFront automatically updates to new versions when Lambda code changes
   - No manual Version resources needed
@@ -205,10 +206,21 @@ If code changes don't appear after deployment:
 3. CloudFront requires a few minutes to propagate Lambda@Edge updates to edge locations
 4. Invalidate CloudFront cache after Lambda updates
 
-### Runtime Selection Issues
+### Suppressing CDK Warnings
 
-If you see "Module has no exported member 'getLatestNodeVersion'" or similar:
+CDK warnings can be acknowledged at the app level in `src/main.ts`, which applies to all constructs:
 
-- Use `determineLatestNodeRuntime(scope)` from `aws-cdk-lib/aws-lambda`
-- Do not use `Runtime.NODEJS_LATEST` directly (has known issues)
-- The function intelligently selects the appropriate runtime based on CDK feature flags
+```typescript
+import { App, Annotations } from 'aws-cdk-lib';
+
+const app = new App();
+
+Annotations.of(app).acknowledgeWarning(
+  '@aws-cdk/aws-lambda-nodejs:sdkV2NotInRuntime',
+  'Explanation of why this warning can be safely ignored'
+);
+```
+
+This project acknowledges warnings about NODEJS_LATEST usage at the app level, as we intentionally want automatic runtime updates without manual version maintenance.
+
+**Note:** Context flags in `cdk.json` (like `@aws-cdk/aws-lambda-nodejs:sdkV2NotInRuntime: true`) are feature flags that control CDK behavior, not warning suppressions. Use `Annotations.acknowledgeWarning()` to suppress warning messages.
