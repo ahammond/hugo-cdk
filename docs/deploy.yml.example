@@ -20,6 +20,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:  # Allows manual triggering from Actions console
 
 permissions:
   id-token: write  # Required for OIDC authentication
@@ -58,7 +59,7 @@ jobs:
     name: Deploy to AWS
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
 
     steps:
       - name: Download build artifacts
