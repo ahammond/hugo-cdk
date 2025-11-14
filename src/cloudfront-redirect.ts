@@ -1,3 +1,4 @@
+import { Annotations } from 'aws-cdk-lib';
 import { CompositePrincipal, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { determineLatestNodeRuntime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';

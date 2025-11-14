@@ -1,4 +1,4 @@
-import { Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { Annotations, Duration, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 import { Distribution, IDistribution, LambdaEdgeEventType, PriceClass } from 'aws-cdk-lib/aws-cloudfront';
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -48,6 +48,16 @@ export class StaticSite extends Construct implements IStaticSite {
 
   constructor(scope: Construct, id: string, props: StaticSiteProps) {
     super(scope, id);
+
+    // Suppress CDK warnings for child Lambda constructs
+    Annotations.of(this).acknowledgeWarning(
+      '@aws-cdk/aws-lambda-nodejs:sdkV2NotInRuntime',
+      'We do not rely on AWS SDK v2 in the runtime',
+    );
+    Annotations.of(this).acknowledgeWarning(
+      '@aws-cdk/aws-lambda-nodejs:variableRuntimeExternals',
+      'We accept that NODEJS_LATEST runtime may change',
+    );
 
     const lambda = new CloudfrontRedirect(this);
 
