@@ -10,14 +10,10 @@
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",
     "default": "npx projen default",
-    "deploy:personal": "npx projen deploy:personal",
     "deploy:prod": "npx projen deploy:prod",
-    "destroy:personal": "npx projen destroy:personal",
-    "diff:personal": "npx projen diff:personal",
     "diff:prod": "npx projen diff:prod",
     "eject": "npx projen eject",
     "eslint": "npx projen eslint",
-    "fastdiff:personal": "npx projen fastdiff:personal",
     "fastdiff:prod": "npx projen fastdiff:prod",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
@@ -30,7 +26,6 @@
     "test": "npx projen test",
     "test:watch": "npx projen test:watch",
     "upgrade": "npx projen upgrade",
-    "watch:personal": "npx projen watch:personal",
     "projen": "npx projen"
   },
   "author": {

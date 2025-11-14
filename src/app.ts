@@ -13,8 +13,6 @@ import { App, AppProps, Stack, StackProps } from 'aws-cdk-lib';
  * each stage
  */
 export interface PipelineAppProps extends AppProps {
-  /** This function will be used to generate a personal stack. */
-  providePersonalStack: (app: App, stackId: string, props: PipelineAppStackProps) => Stack;
   /** This function will be used to generate a prod stack. */
   provideProdStack: (app: App, stackId: string, props: PipelineAppStackProps) => Stack;
 
@@ -37,11 +35,6 @@ export class PipelineApp extends App {
   constructor(props: PipelineAppProps) {
     super(props);
 
-    // If the environment variable USER is set and a function is provided for creating a personal stack, it is called with necessary arguments.
-    if (props.providePersonalStack && process.env.USER) {
-      const stageName = 'personal-' + process.env.USER.toLowerCase().replace(/\//g, '-');
-      props.providePersonalStack(this, 'HugoCDK-personal', { env: { account: '263869919117', region: 'us-east-1' }, stackName: `HugoCDK-${stageName}`, stageName });
-    }
     // If a function is provided for creating a prod stack, it is called with necessary arguments.
     if (props.provideProdStack) {
       props.provideProdStack(this, 'HugoCDK-prod', { env: { account: '263869919117', region: 'us-east-1' }, stackName: 'HugoCDK-prod', stageName: 'prod' });
