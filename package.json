@@ -25,6 +25,7 @@
     "synth:silent": "npx projen synth:silent",
     "test": "npx projen test",
     "test:watch": "npx projen test:watch",
+    "update-vars": "npx projen update-vars",
     "upgrade": "npx projen upgrade",
     "projen": "npx projen"
   },

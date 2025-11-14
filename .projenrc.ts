@@ -329,4 +329,11 @@ project.tasks
     'cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never --concurrency 10 deploy "HugoCDK-prod/*"',
   );
 
+// Add script to update GitHub variables from CloudFormation exports
+// This syncs AWS infrastructure values to GitHub Actions variables after deployment
+project.addTask('update-vars', {
+  description: 'Update GitHub repository variables from CloudFormation exports',
+  exec: './scripts/update-github-vars.sh',
+});
+
 project.synth();

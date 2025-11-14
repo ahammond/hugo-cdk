@@ -224,6 +224,15 @@
         }
       ]
     },
+    "update-vars": {
+      "name": "update-vars",
+      "description": "Update GitHub repository variables from CloudFormation exports",
+      "steps": [
+        {
+          "exec": "./scripts/update-github-vars.sh"
+        }
+      ]
+    },
     "upgrade": {
       "name": "upgrade",
       "description": "upgrade dependencies",
