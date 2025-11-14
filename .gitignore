@@ -54,6 +54,7 @@ codecov.*
 /cdk.out/
 .cdk.staging/
 .parcel-cache/
+.claude/settings.local.json
 /cdk-outputs-*.json
 !/src/app.ts
 !/.github/workflows/deploy.yml

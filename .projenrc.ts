@@ -239,6 +239,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 //   },
 // });
 
+// Ignore Claude Code local settings
+project.gitignore.addPatterns('.claude/settings.local.json');
+
 // Configure Projen Pipelines for automated CDK deployment
 // This will generate GitHub Actions workflows for production deployment only
 new GithubCDKPipeline(project, {
@@ -292,10 +295,11 @@ if (deployWorkflow) {
 // Override deploy tasks to deploy all nested stacks using wildcard pattern
 // projen-pipelines by default only deploys the parent stack (HugoCDK-prod)
 // but we have nested stacks (Blog, Food) that need to be deployed too
+// Use --concurrency to deploy stacks in parallel for faster deployments
 project.tasks
   .tryFind('deploy:prod')
   ?.reset(
-    'cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never deploy "HugoCDK-prod/*"',
+    'cdk --app cdk.out --outputs-file cdk-outputs-prod.json --progress events --require-approval never --concurrency 10 deploy "HugoCDK-prod/*"',
   );
 
 project.synth();
