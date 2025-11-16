@@ -33,6 +33,17 @@
       "addLabels": [
         "optional"
       ]
+    },
+    {
+      "groupName": "Jest ecosystem",
+      "matchPackageNames": [
+        "jest",
+        "ts-jest",
+        "@types/jest"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ]
     }
   ],
   "ignoreDeps": [
@@ -45,6 +56,7 @@
     "typescript",
     "aws-cdk-lib",
     "constructs",
+    "pnpm",
     "projen",
     "actions/checkout",
     "actions/download-artifact",

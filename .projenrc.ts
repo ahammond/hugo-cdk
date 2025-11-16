@@ -25,6 +25,11 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     // Ignore projen itself (managed separately via projen upgrade workflow)
     ignoreProjen: true,
 
+    // Explicitly ignore build environment tools managed by projen
+    ignore: [
+      'pnpm',  // Managed by pnpmVersion in projen
+    ],
+
     // Label all Renovate PRs
     labels: ['renovate', 'dependencies'],
 
@@ -53,6 +58,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
           // Label optional dependencies
           matchDepTypes: ['optionalDependencies'],
           addLabels: ['optional'],
+        },
+        {
+          // Jest ecosystem must update together (breaking changes between majors)
+          groupName: 'Jest ecosystem',
+          matchPackageNames: ['jest', 'ts-jest', '@types/jest'],
+          matchUpdateTypes: ['major'],
         },
       ],
 
