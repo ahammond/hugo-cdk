@@ -154,10 +154,6 @@
         }
       ]
     },
-    "post-upgrade": {
-      "name": "post-upgrade",
-      "description": "Runs after upgrading dependencies"
-    },
     "pre-compile": {
       "name": "pre-compile",
       "description": "Prepare the project for compilation"
@@ -221,30 +217,6 @@
       "steps": [
         {
           "exec": "jest --watch"
-        }
-      ]
-    },
-    "upgrade": {
-      "name": "upgrade",
-      "description": "upgrade dependencies",
-      "env": {
-        "CI": "0"
-      },
-      "steps": [
-        {
-          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/aws-lambda,@types/jest,@types/standard-version,cdk-assets,codecov,esbuild,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,jsii-release,prettier,projen,projen-pipelines,standard-version,ts-jest,ts-node,aws-lambda,source-map-support"
-        },
-        {
-          "exec": "pnpm i --no-frozen-lockfile"
-        },
-        {
-          "exec": "pnpm update @types/aws-lambda @types/jest @types/node @types/standard-version @typescript-eslint/eslint-plugin @typescript-eslint/parser aws-cdk cdk-assets codecov esbuild eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit jsii-release prettier projen projen-pipelines standard-version ts-jest ts-node typescript aws-cdk-lib aws-lambda constructs source-map-support"
-        },
-        {
-          "exec": "npx projen"
-        },
-        {
-          "spawn": "post-upgrade"
         }
       ]
     }

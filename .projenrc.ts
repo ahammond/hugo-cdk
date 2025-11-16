@@ -1,7 +1,4 @@
-import {
-  awscdk,
-  javascript, //FileBase,, TextFile, YamlFile
-} from 'projen';
+import { awscdk, javascript, RenovatebotScheduleInterval } from 'projen';
 import { GithubCDKPipeline } from 'projen-pipelines';
 
 const pnpmVersion = '10';
@@ -17,6 +14,63 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   repository: 'https://github.com/ahammond/hugo-cdk.git',
   minNodeVersion: '22.19.0',
   workflowNodeVersion: '22.19.0',
+
+  // Dependency management via Renovate
+  depsUpgrade: false,
+  renovatebot: true,
+  renovatebotOptions: {
+    // Weekly schedule - Monday mornings before 3am
+    scheduleInterval: [RenovatebotScheduleInterval.EARLY_MONDAYS],
+
+    // Ignore projen itself (managed separately via projen upgrade workflow)
+    ignoreProjen: true,
+
+    // Label all Renovate PRs
+    labels: ['renovate', 'dependencies'],
+
+    // Override default config with battle-tested settings from ClickUp
+    overrideConfig: {
+      // Use recommended presets
+      extends: [
+        'config:recommended',
+        'group:recommended',
+        'group:monorepos',
+        'mergeConfidence:all-badges', // Show merge confidence scores
+      ],
+
+      // Package-specific rules
+      packageRules: [
+        {
+          // Group all non-major updates together
+          groupName: 'all non-major dependencies',
+          groupSlug: 'all-minor-patch',
+          matchPackageNames: ['*'],
+          matchUpdateTypes: ['minor', 'patch'],
+          // Auto-merge safe updates (requires GitHub auto-merge enabled)
+          automerge: true,
+        },
+        {
+          // Label optional dependencies
+          matchDepTypes: ['optionalDependencies'],
+          addLabels: ['optional'],
+        },
+      ],
+
+      // Update all dependencies, not just majors
+      rangeStrategy: 'bump',
+
+      // No limits on PRs (weekly schedule)
+      prHourlyLimit: 0,
+      prConcurrentLimit: 0,
+
+      // Use GitHub's native auto-merge feature
+      automergeType: 'pr',
+      platformAutomerge: true,
+
+      // Security: wait 7 days after release before updating
+      minimumReleaseAge: '7 days',
+    },
+  },
 
   context: {
     // Recommended feature flags from:

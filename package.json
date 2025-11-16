@@ -17,7 +17,6 @@
     "fastdiff:prod": "npx projen fastdiff:prod",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
-    "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
     "publish:assets": "npx projen publish:assets",
     "publish:assets:prod": "npx projen publish:assets:prod",
@@ -25,7 +24,6 @@
     "synth:silent": "npx projen synth:silent",
     "test": "npx projen test",
     "test:watch": "npx projen test:watch",
-    "upgrade": "npx projen upgrade",
     "projen": "npx projen"
   },
   "author": {
