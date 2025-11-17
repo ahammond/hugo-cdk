@@ -1,7 +1,7 @@
 import { awscdk, javascript, RenovatebotScheduleInterval } from 'projen';
 import { GithubCDKPipeline } from 'projen-pipelines';
 
-const pnpmVersion = '10';
+const pnpmVersion = '10.18.3';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: '@ahammond/hugo-cdk',
@@ -25,10 +25,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     // Ignore projen itself (managed separately via projen upgrade workflow)
     ignoreProjen: true,
 
-    // Explicitly ignore build environment tools managed by projen
-    ignore: [
-      'pnpm',  // Managed by pnpmVersion in projen
-    ],
+    // Note: pnpm and Node.js versions are managed via regexManagers below
+    // They update both .tool-versions (local dev) and .projenrc.ts (CI/CD) together
+    ignore: [],
 
     // Label all Renovate PRs
     labels: ['renovate', 'dependencies'],
@@ -42,6 +41,55 @@ const project = new awscdk.AwsCdkTypeScriptApp({
         'group:monorepos',
         'mergeConfidence:all-badges', // Show merge confidence scores
       ],
+
+      // Enable automatic updates of cdkVersion in .projenrc.ts
+      // This allows zero-touch CDK updates with determineLatestNodeRuntime()
+      regexManagers: [
+        {
+          fileMatch: ['^.projenrc.ts$'],
+          matchStrings: ["cdkVersion: '(?<currentValue>.*?)'"],
+          depNameTemplate: 'aws-cdk-lib',
+          datasourceTemplate: 'npm',
+        },
+        // Auto-update Node.js version in .tool-versions (for mise/local dev)
+        {
+          fileMatch: ['^.tool-versions$'],
+          matchStrings: ['^nodejs\\s+(?<currentValue>\\S+)'],
+          depNameTemplate: 'node',
+          datasourceTemplate: 'node-version',
+        },
+        // Auto-update Node.js version in .projenrc.ts (for CI/CD workflows)
+        {
+          fileMatch: ['^.projenrc.ts$'],
+          matchStrings: [
+            "minNodeVersion: '(?<currentValue>.*?)'",
+            "workflowNodeVersion: '(?<currentValue>.*?)'",
+          ],
+          depNameTemplate: 'node',
+          datasourceTemplate: 'node-version',
+        },
+        // Auto-update pnpm version in .tool-versions (for mise/local dev)
+        {
+          fileMatch: ['^.tool-versions$'],
+          matchStrings: ['^pnpm\\s+(?<currentValue>\\S+)'],
+          depNameTemplate: 'pnpm',
+          datasourceTemplate: 'npm',
+        },
+        // Auto-update pnpm version in .projenrc.ts (for CI/CD workflows)
+        {
+          fileMatch: ['^.projenrc.ts$'],
+          matchStrings: ["const pnpmVersion = '(?<currentValue>.*?)';"],
+          depNameTemplate: 'pnpm',
+          datasourceTemplate: 'npm',
+        },
+      ],
+
+      // After updating .projenrc.ts, regenerate projen-managed files
+      postUpgradeTasks: {
+        commands: ['pnpm projen'],
+        fileFilters: ['**/*'],
+        executionMode: 'branch',
+      },
 
       // Package-specific rules
       packageRules: [
@@ -70,9 +118,11 @@ const project = new awscdk.AwsCdkTypeScriptApp({
       // Update all dependencies, not just majors
       rangeStrategy: 'bump',
 
-      // No limits on PRs (weekly schedule)
-      prHourlyLimit: 0,
-      prConcurrentLimit: 0,
+      // Rate limiting to avoid CI stampede and excessive rebasing
+      // With weekly schedule: creates max 2 PRs per run, 1 per hour
+      // As PRs merge, new ones can be created next week
+      prHourlyLimit: 1,
+      prConcurrentLimit: 2,
 
       // Use GitHub's native auto-merge feature
       automergeType: 'pr',
