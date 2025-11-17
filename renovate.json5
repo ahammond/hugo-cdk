@@ -56,7 +56,6 @@
     "typescript",
     "aws-cdk-lib",
     "constructs",
-    "pnpm",
     "projen",
     "actions/checkout",
     "actions/download-artifact",
@@ -65,9 +64,71 @@
     "aws-actions/configure-aws-credentials",
     "amannn/action-semantic-pull-request"
   ],
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^.projenrc.ts$"
+      ],
+      "matchStrings": [
+        "cdkVersion: '(?<currentValue>.*?)'"
+      ],
+      "depNameTemplate": "aws-cdk-lib",
+      "datasourceTemplate": "npm"
+    },
+    {
+      "fileMatch": [
+        "^.tool-versions$"
+      ],
+      "matchStrings": [
+        "^nodejs\\s+(?<currentValue>\\S+)"
+      ],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version"
+    },
+    {
+      "fileMatch": [
+        "^.projenrc.ts$"
+      ],
+      "matchStrings": [
+        "minNodeVersion: '(?<currentValue>.*?)'",
+        "workflowNodeVersion: '(?<currentValue>.*?)'"
+      ],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version"
+    },
+    {
+      "fileMatch": [
+        "^.tool-versions$"
+      ],
+      "matchStrings": [
+        "^pnpm\\s+(?<currentValue>\\S+)"
+      ],
+      "depNameTemplate": "pnpm",
+      "datasourceTemplate": "npm"
+    },
+    {
+      "fileMatch": [
+        "^.projenrc.ts$"
+      ],
+      "matchStrings": [
+        "const pnpmVersion = '(?<currentValue>.*?)';"
+      ],
+      "depNameTemplate": "pnpm",
+      "datasourceTemplate": "npm"
+    }
+  ],
+  "postUpgradeTasks": {
+    "commands": [
+      "pnpm projen"
+    ],
+    "fileFilters": [
+      "**/*"
+    ],
+    "executionMode": "branch"
+  },
   "rangeStrategy": "bump",
-  "prHourlyLimit": 0,
-  "prConcurrentLimit": 0,
+  "prHourlyLimit": 1,
+  "prConcurrentLimit": 2,
   "automergeType": "pr",
   "platformAutomerge": true,
   "minimumReleaseAge": "7 days"
