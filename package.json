@@ -44,7 +44,7 @@
     "esbuild": "^0.25.0",
     "eslint": "^9",
     "eslint-config-prettier": "^8.10.0",
-    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "^27.5.1",
