@@ -61,10 +61,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
         // Auto-update Node.js version in .projenrc.ts (for CI/CD workflows)
         {
           fileMatch: ['^.projenrc.ts$'],
-          matchStrings: [
-            "minNodeVersion: '(?<currentValue>.*?)'",
-            "workflowNodeVersion: '(?<currentValue>.*?)'",
-          ],
+          matchStrings: ["minNodeVersion: '(?<currentValue>.*?)'", "workflowNodeVersion: '(?<currentValue>.*?)'"],
           depNameTemplate: 'node',
           datasourceTemplate: 'node-version',
         },
