@@ -12,8 +12,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'main',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repository: 'https://github.com/ahammond/hugo-cdk.git',
-  minNodeVersion: '22.22.0',
-  workflowNodeVersion: '22.22.0',
+  minNodeVersion: '24.13.1',
+  workflowNodeVersion: '24.13.1',
 
   // Dependency management via Renovate
   depsUpgrade: false,
