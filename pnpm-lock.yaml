@@ -68,7 +68,7 @@ importers:
         version: 4.2.5(eslint-config-prettier@8.10.2(eslint@9.39.1))(eslint@9.39.1)(prettier@2.8.8)
       jest:
         specifier: ^27.5.1
-        version: 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+        version: 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
       jest-junit:
         specifier: ^16
         version: 16.0.0
@@ -89,10 +89,10 @@ importers:
         version: 9.5.0
       ts-jest:
         specifier: ^27.1.5
-        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(esbuild@0.27.3)(jest@27.5.1(ts-node@9.1.1(typescript@5.3.3)))(typescript@5.3.3)
+        version: 27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(esbuild@0.27.3)(jest@27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3)))(typescript@5.3.3)
       ts-node:
-        specifier: ^9.1.1
-        version: 9.1.1(typescript@5.3.3)
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@24.11.0)(typescript@5.3.3)
       typescript:
         specifier: ~5.3.0
         version: 5.3.3
@@ -404,6 +404,10 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
+  '@cspotcode/source-map-support@0.8.1':
+    resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
+    engines: {node: '>=12'}
+
   '@esbuild/aix-ppc64@0.27.3':
     resolution: {integrity: sha512-9fJMTNFTWZMh5qwrBItuziu834eOCUcEqymSH7pY+zoMVEZg3gcPuBNxH1EvfVYe9h0x/Ptw8KBzv7qxb7l8dg==}
     engines: {node: '>=18'}
@@ -702,6 +706,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
+  '@jridgewell/trace-mapping@0.3.9':
+    resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -899,6 +906,18 @@ packages:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
     engines: {node: '>= 6'}
 
+  '@tsconfig/node10@1.0.12':
+    resolution: {integrity: sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==}
+
+  '@tsconfig/node12@1.0.11':
+    resolution: {integrity: sha512-cqefuRsh12pWyGsIoBKJA9luFu3mRxCA+ORZvA4ktLSzIuCUtWVxGIuXigEwO5/ywWFMZ2QEGKWvkZG1zDMTag==}
+
+  '@tsconfig/node14@1.0.3':
+    resolution: {integrity: sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow==}
+
+  '@tsconfig/node16@1.0.4':
+    resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+
   '@types/aws-lambda@8.10.161':
     resolution: {integrity: sha512-rUYdp+MQwSFocxIOcSsYSF3YYYC/uUpMbCY/mbO21vGqfrEYvNSoPyKYDj6RhXXpPfS0KstW9RwG3qXh9sL7FQ==}
 
@@ -1047,13 +1066,12 @@ packages:
     resolution: {integrity: sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==}
     engines: {node: '>=0.4.0'}
 
+  acorn-walk@8.3.5:
+    resolution: {integrity: sha512-HEHNfbars9v4pgpW6SO1KSPkfoS0xVOM/9UzkJltjlsHZmJasxg8aXkuZa7SMf8vKGIBhpUsPluQSqhJFCqebw==}
+    engines: {node: '>=0.4.0'}
+
   acorn@7.4.1:
     resolution: {integrity: sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
-  acorn@8.12.1:
-    resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -3412,12 +3430,19 @@ packages:
       esbuild:
         optional: true
 
-  ts-node@9.1.1:
-    resolution: {integrity: sha512-hPlt7ZACERQGf03M253ytLY3dHbGNGrAq9qIHWUY9XHYl1z7wYngSr3OQ5xmui8o2AaxsONxIzjafLUiWBo1Fg==}
-    engines: {node: '>=10.0.0'}
+  ts-node@10.9.2:
+    resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
       typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -3546,6 +3571,9 @@ packages:
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
+
+  v8-compile-cache-lib@3.0.1:
+    resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
   v8-to-istanbul@8.1.1:
     resolution: {integrity: sha512-FGtKtv3xIpR6BYhvgH8MI/y78oT7d8Au3ww4QIxymrCtZEh5b8gCw2siywE+puhEmuWKDtmfrvF5UlB298ut3w==}
@@ -4324,6 +4352,10 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
+  '@cspotcode/source-map-support@0.8.1':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.9
+
   '@esbuild/aix-ppc64@0.27.3':
     optional: true
 
@@ -4482,7 +4514,7 @@ snapshots:
       jest-util: 27.5.1
       slash: 3.0.0
 
-  '@jest/core@27.5.1(ts-node@9.1.1(typescript@5.3.3))':
+  '@jest/core@27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))':
     dependencies:
       '@jest/console': 27.5.1
       '@jest/reporters': 27.5.1
@@ -4496,7 +4528,7 @@ snapshots:
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 27.5.1
-      jest-config: 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
       jest-haste-map: 27.5.1
       jest-message-util: 27.5.1
       jest-regex-util: 27.5.1
@@ -4634,6 +4666,11 @@ snapshots:
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
   '@jridgewell/trace-mapping@0.3.25':
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.2
+      '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@jridgewell/trace-mapping@0.3.9':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -4936,6 +4973,14 @@ snapshots:
 
   '@tootallnate/once@1.1.2': {}
 
+  '@tsconfig/node10@1.0.12': {}
+
+  '@tsconfig/node12@1.0.11': {}
+
+  '@tsconfig/node14@1.0.3': {}
+
+  '@tsconfig/node16@1.0.4': {}
+
   '@types/aws-lambda@8.10.161': {}
 
   '@types/babel__core@7.20.5':
@@ -5126,9 +5171,11 @@ snapshots:
 
   acorn-walk@7.2.0: {}
 
-  acorn@7.4.1: {}
+  acorn-walk@8.3.5:
+    dependencies:
+      acorn: 8.15.0
 
-  acorn@8.12.1: {}
+  acorn@7.4.1: {}
 
   acorn@8.15.0: {}
 
@@ -6750,16 +6797,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  jest-cli@27.5.1(ts-node@9.1.1(typescript@5.3.3)):
+  jest-cli@27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3)):
     dependencies:
-      '@jest/core': 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
       '@jest/test-result': 27.5.1
       '@jest/types': 27.5.1
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
       import-local: 3.2.0
-      jest-config: 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+      jest-config: 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
       jest-util: 27.5.1
       jest-validate: 27.5.1
       prompts: 2.4.2
@@ -6771,7 +6818,7 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  jest-config@27.5.1(ts-node@9.1.1(typescript@5.3.3)):
+  jest-config@27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3)):
     dependencies:
       '@babel/core': 7.25.2
       '@jest/test-sequencer': 27.5.1
@@ -6798,7 +6845,7 @@ snapshots:
       slash: 3.0.0
       strip-json-comments: 3.1.1
     optionalDependencies:
-      ts-node: 9.1.1(typescript@5.3.3)
+      ts-node: 10.9.2(@types/node@24.11.0)(typescript@5.3.3)
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -7074,11 +7121,11 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@27.5.1(ts-node@9.1.1(typescript@5.3.3)):
+  jest@27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3)):
     dependencies:
-      '@jest/core': 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+      '@jest/core': 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
       import-local: 3.2.0
-      jest-cli: 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+      jest-cli: 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -7102,7 +7149,7 @@ snapshots:
   jsdom@16.7.0:
     dependencies:
       abab: 2.0.6
-      acorn: 8.12.1
+      acorn: 8.15.0
       acorn-globals: 6.0.0
       cssom: 0.4.4
       cssstyle: 2.3.0
@@ -7996,11 +8043,11 @@ snapshots:
     dependencies:
       typescript: 5.3.3
 
-  ts-jest@27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(esbuild@0.27.3)(jest@27.5.1(ts-node@9.1.1(typescript@5.3.3)))(typescript@5.3.3):
+  ts-jest@27.1.5(@babel/core@7.25.2)(@types/jest@27.5.2)(babel-jest@27.5.1(@babel/core@7.25.2))(esbuild@0.27.3)(jest@27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3)))(typescript@5.3.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 27.5.1(ts-node@9.1.1(typescript@5.3.3))
+      jest: 27.5.1(ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3))
       jest-util: 27.5.1
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -8014,14 +8061,22 @@ snapshots:
       babel-jest: 27.5.1(@babel/core@7.25.2)
       esbuild: 0.27.3
 
-  ts-node@9.1.1(typescript@5.3.3):
+  ts-node@10.9.2(@types/node@24.11.0)(typescript@5.3.3):
     dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.12
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      '@types/node': 24.11.0
+      acorn: 8.15.0
+      acorn-walk: 8.3.5
       arg: 4.1.3
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      source-map-support: 0.5.21
       typescript: 5.3.3
+      v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
   tsconfig-paths@3.15.0:
@@ -8180,6 +8235,8 @@ snapshots:
   uuid@8.0.0: {}
 
   uuid@8.3.2: {}
+
+  v8-compile-cache-lib@3.0.1: {}
 
   v8-to-istanbul@8.1.1:
     dependencies:
