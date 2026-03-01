@@ -46,7 +46,7 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
 
   new HugoSiteStack(parentStack, 'Portfolio', {
     env: { account, region },
-    githubOrg: 'ahammond',
+    githubOrg: 'asyaivanov',
     siteDomain: 'asyahammond.com',
     siteName: 'portfolio',
     allowedBranches: ['main'],

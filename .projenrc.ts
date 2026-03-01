@@ -381,6 +381,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 // Ignore Claude Code local settings
 project.gitignore.addPatterns('.claude/settings.local.json');
 
+// NOTE: projen automatically adds 'resolution-mode=highest' to .npmrc
+// This causes npm 11+ warnings since it's pnpm-specific
+// We've added pnpm-workspace.yaml with resolutionMode setting, but can't remove it from .npmrc
+// The warnings are harmless - npm still works, they're just annoying
+// See: https://github.com/pnpm/pnpm/issues/9274
+
 // Configure Projen Pipelines for automated CDK deployment
 // This will generate GitHub Actions workflows for production deployment only
 new GithubCDKPipeline(project, {
