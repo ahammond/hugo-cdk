@@ -50,7 +50,7 @@
     "jest": "^27.5.1",
     "jest-junit": "^16",
     "jsii-release": "^0.2.1033",
-    "prettier": "^2.8.8",
+    "prettier": "^3.8.1",
     "projen": "^0.99.17",
     "projen-pipelines": "^0.3.3",
     "standard-version": "^9.5.0",
