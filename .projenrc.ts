@@ -1,7 +1,7 @@
 import { awscdk, javascript, RenovatebotScheduleInterval } from 'projen';
 import { GithubCDKPipeline } from 'projen-pipelines';
 
-const pnpmVersion = '10.30.1';
+const pnpmVersion = '10.30.3';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: '@ahammond/hugo-cdk',
@@ -12,8 +12,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'main',
   npmRegistryUrl: 'https://npm.pkg.github.com',
   repository: 'https://github.com/ahammond/hugo-cdk.git',
-  minNodeVersion: '22.22.0',
-  workflowNodeVersion: '22.22.0',
+  minNodeVersion: '24.14.0',
+  workflowNodeVersion: '24.14.0',
 
   // Dependency management via Renovate
   depsUpgrade: false,

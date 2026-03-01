@@ -43,6 +43,14 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     siteName: 'food',
     allowedBranches: ['main'],
   });
+
+  new HugoSiteStack(parentStack, 'Portfolio', {
+    env: { account, region },
+    githubOrg: 'ahammond',
+    siteDomain: 'asyahammond.com',
+    siteName: 'portfolio',
+    allowedBranches: ['main'],
+  });
 }
 
 app.synth();

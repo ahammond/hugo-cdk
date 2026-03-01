@@ -6,5 +6,9 @@
   "acknowledged-issue-numbers": [
     34892,
     32775
-  ]
+  ],
+  "hosted-zone:account=263869919117:domainName=asyahammond.com:region=us-east-1": {
+    "Id": "/hostedzone/Z248ICD6D6PSA",
+    "Name": "asyahammond.com."
+  }
 }
