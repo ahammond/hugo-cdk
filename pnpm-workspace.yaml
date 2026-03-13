@@ -1,0 +1,10 @@
+# pnpm workspace configuration
+# See https://pnpm.io/pnpm-workspace_yaml
+
+packages:
+  - '.'
+
+# pnpm-specific settings (not recognized by npm)
+# See https://pnpm.io/settings
+catalog: {}
+resolutionMode: highest

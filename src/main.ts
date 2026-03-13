@@ -51,6 +51,14 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     siteName: 'portfolio',
     allowedBranches: ['main'],
   });
+
+  new HugoSiteStack(parentStack, 'Westview', {
+    env: { account, region },
+    githubOrg: 'asyaivanov',
+    siteDomain: 'asyahammond.com',
+    siteName: 'westview',
+    allowedBranches: ['main'],
+  });
 }
 
 app.synth();
