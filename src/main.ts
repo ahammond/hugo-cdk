@@ -59,6 +59,13 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     siteName: 'westview',
     allowedBranches: ['main'],
   });
+
+  new HugoSiteStack(parentStack, 'Politics', {
+    env: { account, region },
+    ...commonProps,
+    siteName: 'politics',
+    allowedBranches: ['main'],
+  });
 }
 
 app.synth();
