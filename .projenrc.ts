@@ -81,12 +81,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
         },
       ],
 
-      // After updating .projenrc.ts, regenerate projen-managed files
-      postUpgradeTasks: {
-        commands: ['pnpm projen'],
-        fileFilters: ['**/*'],
-        executionMode: 'branch',
-      },
 
       // Package-specific rules
       packageRules: [

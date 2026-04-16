@@ -117,15 +117,6 @@
       "datasourceTemplate": "npm"
     }
   ],
-  "postUpgradeTasks": {
-    "commands": [
-      "pnpm projen"
-    ],
-    "fileFilters": [
-      "**/*"
-    ],
-    "executionMode": "branch"
-  },
   "rangeStrategy": "bump",
   "prHourlyLimit": 1,
   "prConcurrentLimit": 2,
