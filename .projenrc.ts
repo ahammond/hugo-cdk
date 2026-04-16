@@ -81,7 +81,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
         },
       ],
 
-
       // Package-specific rules
       packageRules: [
         {
