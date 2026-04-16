@@ -1,31 +1,31 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`HugoContentDeploymentRole snapshot matches 1`] = `
-Object {
-  "Parameters": Object {
-    "BootstrapVersion": Object {
+{
+  "Parameters": {
+    "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
-  "Resources": Object {
-    "TestRoleGitHubActionsDeployRole7B9C61C1": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+  "Resources": {
+    "TestRoleGitHubActionsDeployRole7B9C61C1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRoleWithWebIdentity",
-              "Condition": Object {
-                "StringEquals": Object {
+              "Condition": {
+                "StringEquals": {
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
                 },
-                "StringLike": Object {
+                "StringLike": {
                   "token.actions.githubusercontent.com:sub": "repo:testOrg/testRepo:ref:refs/heads/main",
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Federated": "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com",
               },
             },
@@ -37,12 +37,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "TestRoleGitHubActionsDeployRoleDefaultPolicyD50FA80F": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
+    "TestRoleGitHubActionsDeployRoleDefaultPolicyD50FA80F": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
                 "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
@@ -55,13 +55,13 @@ Object {
                 "s3:Abort*",
               ],
               "Effect": "Allow",
-              "Resource": Array [
+              "Resource": [
                 "arn:aws:s3:::test-bucket",
                 "arn:aws:s3:::test-bucket/*",
               ],
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "cloudfront:CreateInvalidation",
                 "cloudfront:GetInvalidation",
               ],
@@ -73,8 +73,8 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "TestRoleGitHubActionsDeployRoleDefaultPolicyD50FA80F",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "TestRoleGitHubActionsDeployRole7B9C61C1",
           },
         ],
@@ -82,22 +82,22 @@ Object {
       "Type": "AWS::IAM::Policy",
     },
   },
-  "Rules": Object {
-    "CheckBootstrapVersion": Object {
-      "Assertions": Array [
-        Object {
-          "Assert": Object {
-            "Fn::Not": Array [
-              Object {
-                "Fn::Contains": Array [
-                  Array [
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
                     "1",
                     "2",
                     "3",
                     "4",
                     "5",
                   ],
-                  Object {
+                  {
                     "Ref": "BootstrapVersion",
                   },
                 ],

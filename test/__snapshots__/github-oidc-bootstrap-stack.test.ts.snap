@@ -1,53 +1,53 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`GitHubOIDCBootstrapStack Snapshot Tests snapshot matches default configuration 1`] = `
-Object {
-  "Outputs": Object {
-    "DeploymentRoleArn": Object {
+{
+  "Outputs": {
+    "DeploymentRoleArn": {
       "Description": "ARN of the GitHub Actions deployment role",
-      "Export": Object {
+      "Export": {
         "Name": "GitHubDeploymentRoleArn",
       },
-      "Value": Object {
-        "Fn::GetAtt": Array [
+      "Value": {
+        "Fn::GetAtt": [
           "GitHubDeploymentRoleD4E2A70A",
           "Arn",
         ],
       },
     },
-    "OIDCProviderArn": Object {
+    "OIDCProviderArn": {
       "Description": "ARN of the GitHub OIDC provider",
-      "Export": Object {
+      "Export": {
         "Name": "GitHubOIDCProviderArn",
       },
-      "Value": Object {
+      "Value": {
         "Ref": "GitHubOIDCProvider4F328116",
       },
     },
   },
-  "Parameters": Object {
-    "BootstrapVersion": Object {
+  "Parameters": {
+    "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
-  "Resources": Object {
-    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": Object {
-      "DependsOn": Array [
+  "Resources": {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": {
+      "DependsOn": [
         "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb.zip",
         },
         "Handler": "__entrypoint__.handler",
         "MemorySize": 128,
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
             "Arn",
           ],
@@ -57,31 +57,31 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
+        "ManagedPolicyArns": [
+          {
             "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
           },
         ],
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
                     "iam:CreateOpenIDConnectProvider",
                     "iam:DeleteOpenIDConnectProvider",
                     "iam:UpdateOpenIDConnectProviderThumbprint",
@@ -100,23 +100,23 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "GitHubDeploymentRoleD4E2A70A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "GitHubDeploymentRoleD4E2A70A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRoleWithWebIdentity",
-              "Condition": Object {
-                "StringEquals": Object {
+              "Condition": {
+                "StringEquals": {
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
                 },
-                "StringLike": Object {
+                "StringLike": {
                   "token.actions.githubusercontent.com:sub": "repo:testOrg/testRepo:*",
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
-                "Federated": Object {
+              "Principal": {
+                "Federated": {
                   "Ref": "GitHubOIDCProvider4F328116",
                 },
               },
@@ -130,19 +130,19 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "GitHubDeploymentRoleDefaultPolicy06E4309E": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "GitHubDeploymentRoleDefaultPolicy06E4309E": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:iam::",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":role/cdk-*",
@@ -150,8 +150,8 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "s3:*",
                 "ecr:GetAuthorizationToken",
                 "ecr:BatchCheckLayerAvailability",
@@ -169,29 +169,29 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "GitHubDeploymentRoleDefaultPolicy06E4309E",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "GitHubDeploymentRoleD4E2A70A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GitHubOIDCProvider4F328116": Object {
+    "GitHubOIDCProvider4F328116": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "ClientIDList": Array [
+      "Properties": {
+        "ClientIDList": [
           "sts.amazonaws.com",
         ],
         "CodeHash": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb",
         "RejectUnauthorized": false,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0",
             "Arn",
           ],
         },
-        "ThumbprintList": Array [
+        "ThumbprintList": [
           "6938fd4d98bab03faadb97b34396831e3780aea1",
         ],
         "Url": "https://token.actions.githubusercontent.com",
@@ -200,22 +200,22 @@ Object {
       "UpdateReplacePolicy": "Delete",
     },
   },
-  "Rules": Object {
-    "CheckBootstrapVersion": Object {
-      "Assertions": Array [
-        Object {
-          "Assert": Object {
-            "Fn::Not": Array [
-              Object {
-                "Fn::Contains": Array [
-                  Array [
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
                     "1",
                     "2",
                     "3",
                     "4",
                     "5",
                   ],
-                  Object {
+                  {
                     "Ref": "BootstrapVersion",
                   },
                 ],
@@ -231,53 +231,53 @@ Object {
 `;
 
 exports[`GitHubOIDCBootstrapStack Snapshot Tests snapshot matches with branch restrictions 1`] = `
-Object {
-  "Outputs": Object {
-    "DeploymentRoleArn": Object {
+{
+  "Outputs": {
+    "DeploymentRoleArn": {
       "Description": "ARN of the GitHub Actions deployment role",
-      "Export": Object {
+      "Export": {
         "Name": "GitHubDeploymentRoleArn",
       },
-      "Value": Object {
-        "Fn::GetAtt": Array [
+      "Value": {
+        "Fn::GetAtt": [
           "GitHubDeploymentRoleD4E2A70A",
           "Arn",
         ],
       },
     },
-    "OIDCProviderArn": Object {
+    "OIDCProviderArn": {
       "Description": "ARN of the GitHub OIDC provider",
-      "Export": Object {
+      "Export": {
         "Name": "GitHubOIDCProviderArn",
       },
-      "Value": Object {
+      "Value": {
         "Ref": "GitHubOIDCProvider4F328116",
       },
     },
   },
-  "Parameters": Object {
-    "BootstrapVersion": Object {
+  "Parameters": {
+    "BootstrapVersion": {
       "Default": "/cdk-bootstrap/hnb659fds/version",
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },
-  "Resources": Object {
-    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": Object {
-      "DependsOn": Array [
+  "Resources": {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": {
+      "DependsOn": [
         "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
       ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
           "S3Key": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb.zip",
         },
         "Handler": "__entrypoint__.handler",
         "MemorySize": 128,
-        "Role": Object {
-          "Fn::GetAtt": Array [
+        "Role": {
+          "Fn::GetAtt": [
             "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
             "Arn",
           ],
@@ -287,31 +287,31 @@ Object {
       },
       "Type": "AWS::Lambda::Function",
     },
-    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Principal": Object {
+              "Principal": {
                 "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "ManagedPolicyArns": Array [
-          Object {
+        "ManagedPolicyArns": [
+          {
             "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
           },
         ],
-        "Policies": Array [
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
-                  "Action": Array [
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
                     "iam:CreateOpenIDConnectProvider",
                     "iam:DeleteOpenIDConnectProvider",
                     "iam:UpdateOpenIDConnectProviderThumbprint",
@@ -330,23 +330,23 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "GitHubDeploymentRoleD4E2A70A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "GitHubDeploymentRoleD4E2A70A": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRoleWithWebIdentity",
-              "Condition": Object {
-                "StringEquals": Object {
+              "Condition": {
+                "StringEquals": {
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
                 },
-                "StringLike": Object {
+                "StringLike": {
                   "token.actions.githubusercontent.com:sub": "repo:testOrg/testRepo:ref:refs/heads/main",
                 },
               },
               "Effect": "Allow",
-              "Principal": Object {
-                "Federated": Object {
+              "Principal": {
+                "Federated": {
                   "Ref": "GitHubOIDCProvider4F328116",
                 },
               },
@@ -360,19 +360,19 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "GitHubDeploymentRoleDefaultPolicy06E4309E": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
+    "GitHubDeploymentRoleDefaultPolicy06E4309E": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": Object {
-                "Fn::Join": Array [
+              "Resource": {
+                "Fn::Join": [
                   "",
-                  Array [
+                  [
                     "arn:aws:iam::",
-                    Object {
+                    {
                       "Ref": "AWS::AccountId",
                     },
                     ":role/cdk-*",
@@ -380,8 +380,8 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": Array [
+            {
+              "Action": [
                 "s3:*",
                 "ecr:GetAuthorizationToken",
                 "ecr:BatchCheckLayerAvailability",
@@ -399,29 +399,29 @@ Object {
           "Version": "2012-10-17",
         },
         "PolicyName": "GitHubDeploymentRoleDefaultPolicy06E4309E",
-        "Roles": Array [
-          Object {
+        "Roles": [
+          {
             "Ref": "GitHubDeploymentRoleD4E2A70A",
           },
         ],
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GitHubOIDCProvider4F328116": Object {
+    "GitHubOIDCProvider4F328116": {
       "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "ClientIDList": Array [
+      "Properties": {
+        "ClientIDList": [
           "sts.amazonaws.com",
         ],
         "CodeHash": "62fa02efcaa700e1c247e1d3cc2aa0cd07a0808a9a3e3d2230e51f57a02233fb",
         "RejectUnauthorized": false,
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
+        "ServiceToken": {
+          "Fn::GetAtt": [
             "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0",
             "Arn",
           ],
         },
-        "ThumbprintList": Array [
+        "ThumbprintList": [
           "6938fd4d98bab03faadb97b34396831e3780aea1",
         ],
         "Url": "https://token.actions.githubusercontent.com",
@@ -430,22 +430,22 @@ Object {
       "UpdateReplacePolicy": "Delete",
     },
   },
-  "Rules": Object {
-    "CheckBootstrapVersion": Object {
-      "Assertions": Array [
-        Object {
-          "Assert": Object {
-            "Fn::Not": Array [
-              Object {
-                "Fn::Contains": Array [
-                  Array [
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
                     "1",
                     "2",
                     "3",
                     "4",
                     "5",
                   ],
-                  Object {
+                  {
                     "Ref": "BootstrapVersion",
                   },
                 ],
