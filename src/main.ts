@@ -60,6 +60,13 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     allowedBranches: ['main'],
   });
 
+  new HugoSiteStack(parentStack, 'Chonk', {
+    env: { account, region },
+    ...commonProps,
+    siteName: 'chonk',
+    allowedBranches: ['main'],
+  });
+
   new HugoSiteStack(parentStack, 'Politics', {
     env: { account, region },
     ...commonProps,
