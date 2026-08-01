@@ -73,6 +73,13 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     siteName: 'politics',
     allowedBranches: ['main'],
   });
+
+  new HugoSiteStack(parentStack, 'DndMinis', {
+    env: { account, region },
+    ...commonProps,
+    siteName: 'dnd-minis',
+    allowedBranches: ['main'],
+  });
 }
 
 app.synth();
