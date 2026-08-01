@@ -35,6 +35,8 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     ...commonProps,
     siteName: 'blog',
     allowedBranches: ['main'],
+    githubAccountId: 445764,
+    githubRepoId: 281883466,
   });
 
   new HugoSiteStack(parentStack, 'Food', {
@@ -42,6 +44,8 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     ...commonProps,
     siteName: 'food',
     allowedBranches: ['main'],
+    githubAccountId: 445764,
+    githubRepoId: 347204608,
   });
 
   new HugoSiteStack(parentStack, 'Portfolio', {
@@ -65,6 +69,8 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     ...commonProps,
     siteName: 'chonk',
     allowedBranches: ['main'],
+    githubAccountId: 445764,
+    githubRepoId: 1284497677,
   });
 
   new HugoSiteStack(parentStack, 'Politics', {
@@ -72,6 +78,8 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     ...commonProps,
     siteName: 'politics',
     allowedBranches: ['main'],
+    githubAccountId: 445764,
+    githubRepoId: 1212984540,
   });
 
   new HugoSiteStack(parentStack, 'DndMinis', {
