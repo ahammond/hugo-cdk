@@ -214,7 +214,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': 'repo:myOrganization/blog:ref:refs/heads/main',
+                  'token.actions.githubusercontent.com:sub': ['repo:myOrganization/blog:ref:refs/heads/main'],
                 },
               },
             }),
@@ -239,7 +239,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': 'repo:testOrg/myblog:ref:refs/heads/main',
+                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/myblog:ref:refs/heads/main'],
                 },
               },
             }),
@@ -264,7 +264,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': 'repo:testOrg/my-hugo-repo:ref:refs/heads/main',
+                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/my-hugo-repo:ref:refs/heads/main'],
                 },
               },
             }),
@@ -289,7 +289,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': 'repo:testOrg/blog:ref:refs/heads/main',
+                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/blog:ref:refs/heads/main'],
                 },
               },
             }),
@@ -314,9 +314,11 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': Match.stringLikeRegexp(
-                    'repo:testOrg/blog:ref:refs/heads/(main|master|develop)',
-                  ),
+                  'token.actions.githubusercontent.com:sub': [
+                    'repo:testOrg/blog:ref:refs/heads/main',
+                    'repo:testOrg/blog:ref:refs/heads/master',
+                    'repo:testOrg/blog:ref:refs/heads/develop',
+                  ],
                 },
               },
             }),
@@ -480,7 +482,7 @@ describe('HugoSiteStack', () => {
               Match.objectLike({
                 Condition: {
                   StringLike: {
-                    'token.actions.githubusercontent.com:sub': `repo:${org}/blog:ref:refs/heads/main`,
+                    'token.actions.githubusercontent.com:sub': [`repo:${org}/blog:ref:refs/heads/main`],
                   },
                 },
               }),
@@ -500,14 +502,18 @@ describe('HugoSiteStack', () => {
       });
       template = Template.fromStack(stack);
 
-      // Should have comma-separated branches in subject claim
+      // Should have one subject claim per branch
       template.hasResourceProperties('AWS::IAM::Role', {
         AssumeRolePolicyDocument: Match.objectLike({
           Statement: Match.arrayWith([
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': Match.stringLikeRegexp('repo:testOrg/blog:'),
+                  'token.actions.githubusercontent.com:sub': [
+                    'repo:testOrg/blog:ref:refs/heads/main',
+                    'repo:testOrg/blog:ref:refs/heads/release/*',
+                    'repo:testOrg/blog:ref:refs/heads/develop',
+                  ],
                 },
               },
             }),
@@ -532,7 +538,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': 'repo:testOrg/blog:ref:refs/heads/production',
+                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/blog:ref:refs/heads/production'],
                 },
               },
             }),

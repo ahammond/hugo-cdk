@@ -79,6 +79,10 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     ...commonProps,
     siteName: 'dnd-minis',
     allowedBranches: ['main'],
+    // Repo created 2026-07-31, after GitHub's immutable OIDC subject rollout.
+    // IDs from: gh api repos/ahammond/dnd-minis/actions/oidc/customization/sub
+    githubAccountId: 445764,
+    githubRepoId: 1318918137,
   });
 }
 

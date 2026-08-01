@@ -28,6 +28,16 @@ export interface HugoContentDeploymentRoleProps {
    */
   readonly allowedBranches?: string[];
   /**
+   * Optional: GitHub account ID and repository ID.
+   * Repos created after GitHub's immutable OIDC subject rollout send
+   * sub = repo:ORG@ACCOUNT_ID/REPO@REPO_ID:ref:... instead of repo:ORG/REPO:ref:...,
+   * with no repo-level opt-out. Look them up with:
+   * gh api repos/ORG/REPO/actions/oidc/customization/sub
+   * When both are set, the trust policy accepts both subject formats.
+   */
+  readonly githubAccountId?: number;
+  readonly githubRepoId?: number;
+  /**
    * Optional: ARN of existing GitHub OIDC provider to use
    * If not provided, imports the provider from the GitHubOIDCBootstrap stack export
    * @default - Imports from GitHubOIDCProviderArn CloudFormation export
@@ -60,17 +70,23 @@ export class HugoContentDeploymentRole extends Construct {
 
     this.provider = OpenIdConnectProvider.fromOpenIdConnectProviderArn(this, 'GitHubOIDCProvider', providerArn);
 
-    // Build the subject claim based on allowed branches
-    let subjectClaim: string;
+    // Build the subject claims based on allowed branches.
+    // Each claim is emitted in the legacy repo:ORG/REPO form and, when the
+    // account/repo IDs are provided, also in GitHub's immutable
+    // repo:ORG@ACCOUNT_ID/REPO@REPO_ID form.
+    const repoIdentifiers = [`${props.githubOrg}/${props.githubRepo}`];
+    if (props.githubAccountId && props.githubRepoId) {
+      repoIdentifiers.push(`${props.githubOrg}@${props.githubAccountId}/${props.githubRepo}@${props.githubRepoId}`);
+    }
+    let subjectClaims: string[];
     if (props.allowedBranches && props.allowedBranches.length > 0) {
       // Restrict to specific branches
-      const branchPatterns = props.allowedBranches
-        .map((branch) => `repo:${props.githubOrg}/${props.githubRepo}:ref:refs/heads/${branch}`)
-        .join(',');
-      subjectClaim = branchPatterns;
+      subjectClaims = props.allowedBranches.flatMap((branch) =>
+        repoIdentifiers.map((repo) => `repo:${repo}:ref:refs/heads/${branch}`),
+      );
     } else {
       // Allow all branches and tags
-      subjectClaim = `repo:${props.githubOrg}/${props.githubRepo}:*`;
+      subjectClaims = repoIdentifiers.map((repo) => `repo:${repo}:*`);
     }
 
     // Create the IAM role that GitHub Actions will assume
@@ -82,7 +98,7 @@ export class HugoContentDeploymentRole extends Construct {
           'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
         },
         StringLike: {
-          'token.actions.githubusercontent.com:sub': subjectClaim,
+          'token.actions.githubusercontent.com:sub': subjectClaims,
         },
       }),
       maxSessionDuration: Stack.of(this).node.tryGetContext('github-actions-max-session-duration') || undefined,

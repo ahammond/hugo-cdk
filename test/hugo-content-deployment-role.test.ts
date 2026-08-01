@@ -54,7 +54,7 @@ describe('HugoContentDeploymentRole', () => {
                 'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
               },
               StringLike: {
-                'token.actions.githubusercontent.com:sub': 'repo:testOrg/testRepo:ref:refs/heads/main',
+                'token.actions.githubusercontent.com:sub': ['repo:testOrg/testRepo:ref:refs/heads/main'],
               },
             },
           }),
@@ -93,5 +93,47 @@ describe('HugoContentDeploymentRole', () => {
 
   test('snapshot matches', () => {
     expect(template.toJSON()).toMatchSnapshot();
+  });
+
+  test('includes immutable OIDC subject when account and repo IDs are provided', () => {
+    const idApp = new App();
+    const idStack = new Stack(idApp, 'TestStackWithIds', {
+      env: { account: '123456789012', region: 'us-east-1' },
+    });
+
+    new CuT.HugoContentDeploymentRole(idStack, 'TestRole', {
+      githubOrg: 'testOrg',
+      githubRepo: 'testRepo',
+      staticSite: {
+        bucket: Bucket.fromBucketAttributes(idStack, 'Bucket', {
+          bucketName: 'test-bucket',
+          bucketArn: 'arn:aws:s3:::test-bucket',
+        }),
+        distribution: Distribution.fromDistributionAttributes(idStack, 'Distribution', {
+          distributionId: 'testDistributionId',
+          domainName: 'testDomainName',
+        }),
+      },
+      allowedBranches: ['main'],
+      githubAccountId: 445764,
+      githubRepoId: 1318918137,
+    });
+
+    Template.fromStack(idStack).hasResourceProperties('AWS::IAM::Role', {
+      AssumeRolePolicyDocument: {
+        Statement: Match.arrayWith([
+          Match.objectLike({
+            Condition: Match.objectLike({
+              StringLike: {
+                'token.actions.githubusercontent.com:sub': [
+                  'repo:testOrg/testRepo:ref:refs/heads/main',
+                  'repo:testOrg@445764/testRepo@1318918137:ref:refs/heads/main',
+                ],
+              },
+            }),
+          }),
+        ]),
+      },
+    });
   });
 });

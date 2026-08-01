@@ -15,6 +15,14 @@ export interface HugoSiteStackProps extends staticSite.StaticSiteProps, StackPro
    * @default - ['main']
    */
   readonly allowedBranches?: string[];
+  /**
+   * Optional: GitHub account ID and repository ID, required for repos created
+   * after GitHub's immutable OIDC subject rollout (their tokens send
+   * repo:ORG@ACCOUNT_ID/REPO@REPO_ID:... subjects). Look them up with:
+   * gh api repos/ORG/REPO/actions/oidc/customization/sub
+   */
+  readonly githubAccountId?: number;
+  readonly githubRepoId?: number;
 }
 
 export class HugoSiteStack extends Stack {
@@ -32,6 +40,8 @@ export class HugoSiteStack extends Stack {
       githubRepo: props.githubRepo || props.siteName,
       staticSite: this.site,
       allowedBranches: props.allowedBranches || ['main'],
+      githubAccountId: props.githubAccountId,
+      githubRepoId: props.githubRepoId,
     });
 
     // Output values needed for GitHub Actions workflow

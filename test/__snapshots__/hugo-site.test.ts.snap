@@ -123,7 +123,9 @@ exports[`HugoSiteStack Snapshot Tests snapshot matches default configuration 1`]
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
                 },
                 "StringLike": {
-                  "token.actions.githubusercontent.com:sub": "repo:testOrg/blog:ref:refs/heads/main",
+                  "token.actions.githubusercontent.com:sub": [
+                    "repo:testOrg/blog:ref:refs/heads/main",
+                  ],
                 },
               },
               "Effect": "Allow",
@@ -807,7 +809,10 @@ exports[`HugoSiteStack Snapshot Tests snapshot matches with custom githubRepo an
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
                 },
                 "StringLike": {
-                  "token.actions.githubusercontent.com:sub": "repo:testOrg/my-blog-repo:ref:refs/heads/main,repo:testOrg/my-blog-repo:ref:refs/heads/staging",
+                  "token.actions.githubusercontent.com:sub": [
+                    "repo:testOrg/my-blog-repo:ref:refs/heads/main",
+                    "repo:testOrg/my-blog-repo:ref:refs/heads/staging",
+                  ],
                 },
               },
               "Effect": "Allow",
