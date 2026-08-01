@@ -1,7 +1,7 @@
 import { awscdk, javascript, RenovatebotScheduleInterval } from 'projen';
 import { GithubCDKPipeline } from 'projen-pipelines';
 
-const pnpmVersion = '10.30.3';
+const pnpmVersion = '11.9.0';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: '@ahammond/hugo-cdk',

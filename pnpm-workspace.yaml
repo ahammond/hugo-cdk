@@ -8,3 +8,11 @@ packages:
 # See https://pnpm.io/settings
 catalog: {}
 resolutionMode: highest
+
+# pnpm 11 requires an explicit decision per dependency build script;
+# undecided scripts fail `pnpm install` (and the pre-run deps check).
+# esbuild's postinstall is needed for Lambda bundling; the others are not.
+allowBuilds:
+  aws-sdk: false
+  esbuild: true
+  unrs-resolver: false
