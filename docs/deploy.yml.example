@@ -43,6 +43,12 @@ jobs:
         with:
           experimental: true
 
+      # Required when the site has a package.json (e.g. Tailwind-based themes).
+      # Pin pnpm in mise.toml; commit pnpm-lock.yaml, never node_modules.
+      # Remove this step if the site has no Node dependencies.
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Build site
         run: mise run build --minify
         env:
