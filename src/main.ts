@@ -54,6 +54,8 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     siteDomain: 'asyahammond.com',
     siteName: 'portfolio',
     allowedBranches: ['main'],
+    githubAccountId: 264667898,
+    githubRepoId: 1169456855,
   });
 
   new HugoSiteStack(parentStack, 'Westview', {
@@ -61,7 +63,10 @@ if (process.env.DEPLOY_STAGE === 'bootstrap') {
     githubOrg: 'asyaivanov',
     siteDomain: 'asyahammond.com',
     siteName: 'westview',
+    githubRepo: 'westview_website',
     allowedBranches: ['main'],
+    githubAccountId: 264667898,
+    githubRepoId: 1182064155,
   });
 
   new HugoSiteStack(parentStack, 'Chonk', {
