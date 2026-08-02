@@ -38,8 +38,8 @@ export interface HugoContentDeploymentRoleProps {
   readonly githubRepoId: number;
   /**
    * Optional: ARN of existing GitHub OIDC provider to use
-   * If not provided, imports the provider from the GitHubOIDCBootstrap stack export
-   * @default - Imports from GitHubOIDCProviderArn CloudFormation export
+   * If not provided, references the account's provider (managed in
+   * github.com/ahammond/users-cdk, stack GithubInfra-prod) by its well-known ARN.
    */
   readonly oidcProviderArn?: string;
 }
@@ -49,7 +49,8 @@ export interface HugoContentDeploymentRoleProps {
  * to deploy Hugo site content to S3 and invalidate CloudFront.
  *
  * This is for CONTENT deployment from Hugo repos (e.g., ahammond/blog, ahammond/food).
- * For INFRASTRUCTURE deployment (CDK stacks), see GitHubOIDCBootstrapStack.
+ * For INFRASTRUCTURE deployment (CDK stacks), see GithubDeploymentRole,
+ * managed in github.com/ahammond/users-cdk (stack GithubInfra-prod).
  *
  * The GitHub Actions workflow must use the aws-actions/configure-aws-credentials action
  * with the role ARN and proper permissions.
@@ -61,8 +62,8 @@ export class HugoContentDeploymentRole extends Construct {
   constructor(scope: Construct, id: string, props: HugoContentDeploymentRoleProps) {
     super(scope, id);
 
-    // Import the existing GitHub OIDC provider from the bootstrap stack
-    // The GitHubOIDCBootstrap stack exports this as 'GitHubOIDCProviderArn'
+    // Reference the account's existing GitHub OIDC provider by its well-known
+    // ARN (managed in github.com/ahammond/users-cdk, stack GithubInfra-prod)
     const providerArn =
       props.oidcProviderArn ||
       `arn:aws:iam::${Stack.of(this).account}:oidc-provider/token.actions.githubusercontent.com`;

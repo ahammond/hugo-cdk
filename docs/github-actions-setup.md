@@ -19,12 +19,12 @@ This guide explains how to configure GitHub Actions for deploying Hugo sites to 
 
 ### 1. Deploy the CDK Infrastructure
 
-Deploy via Projen Pipelines (after bootstrap):
+Deploy via Projen Pipelines. The GitHub OIDC provider and the
+`GithubDeploymentRole` that CD assumes are managed separately, in
+[ahammond/users-cdk](https://github.com/ahammond/users-cdk) (stack
+`GithubInfra-prod`).
 
 ```bash
-# Deploy bootstrap stack first (one-time)
-DEPLOY_STAGE=bootstrap cdk deploy GitHubOIDCBootstrap
-
 # Deploy infrastructure (or push to main for auto-deploy)
 pnpm run deploy:prod
 ```

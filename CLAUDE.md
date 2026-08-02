@@ -166,7 +166,7 @@ Each Hugo site repository has its own deployment workflow that uses the infrastr
 ### Prerequisites
 
 #### For CDK Infrastructure Deployment:
-1. AWS IAM role `GithubDeploymentRole` created in account 263869919117 (see bootstrap documentation)
+1. AWS IAM role `GithubDeploymentRole` in account 263869919117 (managed in github.com/ahammond/users-cdk, stack `GithubInfra-prod`)
 2. GitHub repository access to this repo (ahammond/hugo-cdk)
 3. Node.js 24+ and pnpm 10.30+ installed (versions managed via Renovate)
 
