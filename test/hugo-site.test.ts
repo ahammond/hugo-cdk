@@ -16,6 +16,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -43,6 +45,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -61,6 +65,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -78,6 +84,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -95,6 +103,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -112,6 +122,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -127,6 +139,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -140,6 +154,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -155,6 +171,8 @@ describe('HugoSiteStack', () => {
         siteName: 'myblog',
         siteDomain: 'mydomain.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -175,6 +193,8 @@ describe('HugoSiteStack', () => {
         siteName: 'mysite',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -190,6 +210,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'mydomain.io',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -204,6 +226,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'myOrganization',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -214,7 +238,9 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': ['repo:myOrganization/blog:ref:refs/heads/main'],
+                  'token.actions.githubusercontent.com:sub': [
+                    'repo:myOrganization@12345/blog@67890:ref:refs/heads/main',
+                  ],
                 },
               },
             }),
@@ -228,6 +254,8 @@ describe('HugoSiteStack', () => {
         siteName: 'myblog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
         // githubRepo not provided
       });
@@ -239,7 +267,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/myblog:ref:refs/heads/main'],
+                  'token.actions.githubusercontent.com:sub': ['repo:testOrg@12345/myblog@67890:ref:refs/heads/main'],
                 },
               },
             }),
@@ -253,6 +281,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         githubRepo: 'my-hugo-repo',
         env: { account: '123456789012', region: 'us-east-1' },
       });
@@ -264,7 +294,9 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/my-hugo-repo:ref:refs/heads/main'],
+                  'token.actions.githubusercontent.com:sub': [
+                    'repo:testOrg@12345/my-hugo-repo@67890:ref:refs/heads/main',
+                  ],
                 },
               },
             }),
@@ -278,6 +310,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
         // allowedBranches not provided
       });
@@ -289,7 +323,7 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/blog:ref:refs/heads/main'],
+                  'token.actions.githubusercontent.com:sub': ['repo:testOrg@12345/blog@67890:ref:refs/heads/main'],
                 },
               },
             }),
@@ -303,6 +337,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         allowedBranches: ['main', 'master', 'develop'],
         env: { account: '123456789012', region: 'us-east-1' },
       });
@@ -315,9 +351,9 @@ describe('HugoSiteStack', () => {
               Condition: {
                 StringLike: {
                   'token.actions.githubusercontent.com:sub': [
-                    'repo:testOrg/blog:ref:refs/heads/main',
-                    'repo:testOrg/blog:ref:refs/heads/master',
-                    'repo:testOrg/blog:ref:refs/heads/develop',
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/main',
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/master',
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/develop',
                   ],
                 },
               },
@@ -334,6 +370,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -349,6 +387,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog1',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -356,6 +396,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog2',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -377,6 +419,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -405,6 +449,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -438,6 +484,8 @@ describe('HugoSiteStack', () => {
           siteName,
           siteDomain: domain,
           githubOrg: 'testOrg',
+          githubAccountId: 12345,
+          githubRepoId: 67890,
           env: { account: '123456789012', region: 'us-east-1' },
         });
         const t = Template.fromStack(stack);
@@ -453,6 +501,8 @@ describe('HugoSiteStack', () => {
         siteName: 'awesome-blog',
         siteDomain: 'mysite.io',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -472,6 +522,8 @@ describe('HugoSiteStack', () => {
           siteName: 'blog',
           siteDomain: 'example.com',
           githubOrg: org,
+          githubAccountId: 12345,
+          githubRepoId: 67890,
           env: { account: '123456789012', region: 'us-east-1' },
         });
         const t = Template.fromStack(stack);
@@ -482,7 +534,7 @@ describe('HugoSiteStack', () => {
               Match.objectLike({
                 Condition: {
                   StringLike: {
-                    'token.actions.githubusercontent.com:sub': [`repo:${org}/blog:ref:refs/heads/main`],
+                    'token.actions.githubusercontent.com:sub': [`repo:${org}@12345/blog@67890:ref:refs/heads/main`],
                   },
                 },
               }),
@@ -497,6 +549,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         allowedBranches: ['main', 'release/*', 'develop'],
         env: { account: '123456789012', region: 'us-east-1' },
       });
@@ -510,9 +564,9 @@ describe('HugoSiteStack', () => {
               Condition: {
                 StringLike: {
                   'token.actions.githubusercontent.com:sub': [
-                    'repo:testOrg/blog:ref:refs/heads/main',
-                    'repo:testOrg/blog:ref:refs/heads/release/*',
-                    'repo:testOrg/blog:ref:refs/heads/develop',
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/main',
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/release/*',
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/develop',
                   ],
                 },
               },
@@ -527,6 +581,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         allowedBranches: ['production'],
         env: { account: '123456789012', region: 'us-east-1' },
       });
@@ -538,7 +594,9 @@ describe('HugoSiteStack', () => {
             Match.objectLike({
               Condition: {
                 StringLike: {
-                  'token.actions.githubusercontent.com:sub': ['repo:testOrg/blog:ref:refs/heads/production'],
+                  'token.actions.githubusercontent.com:sub': [
+                    'repo:testOrg@12345/blog@67890:ref:refs/heads/production',
+                  ],
                 },
               },
             }),
@@ -554,6 +612,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: {
           account: '999888777666',
           region: 'us-east-1',
@@ -569,6 +629,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         description: 'My Hugo blog deployment stack',
         env: { account: '123456789012', region: 'us-east-1' },
       });
@@ -583,6 +645,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -590,6 +654,8 @@ describe('HugoSiteStack', () => {
         siteName: 'docs',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -613,6 +679,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -620,6 +688,8 @@ describe('HugoSiteStack', () => {
         siteName: 'wiki',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
 
@@ -640,6 +710,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -651,6 +723,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         githubRepo: 'my-blog-repo',
         allowedBranches: ['main', 'staging'],
         env: { account: '123456789012', region: 'us-east-1' },
@@ -666,6 +740,8 @@ describe('HugoSiteStack', () => {
         siteName: 'my-awesome-blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -680,6 +756,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'subdomain.example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         env: { account: '123456789012', region: 'us-east-1' },
       });
       template = Template.fromStack(stack);
@@ -694,6 +772,8 @@ describe('HugoSiteStack', () => {
         siteName: 'blog',
         siteDomain: 'example.com',
         githubOrg: 'testOrg',
+        githubAccountId: 12345,
+        githubRepoId: 67890,
         allowedBranches: [],
         env: { account: '123456789012', region: 'us-east-1' },
       });

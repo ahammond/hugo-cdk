@@ -28,15 +28,14 @@ export interface HugoContentDeploymentRoleProps {
    */
   readonly allowedBranches?: string[];
   /**
-   * Optional: GitHub account ID and repository ID.
-   * Repos created after GitHub's immutable OIDC subject rollout send
-   * sub = repo:ORG@ACCOUNT_ID/REPO@REPO_ID:ref:... instead of repo:ORG/REPO:ref:...,
-   * with no repo-level opt-out. Look them up with:
-   * gh api repos/ORG/REPO/actions/oidc/customization/sub
-   * When both are set, the trust policy accepts both subject formats.
+   * GitHub account ID and repository ID.
+   * All repos use GitHub's immutable OIDC subjects:
+   * sub = repo:ORG@ACCOUNT_ID/REPO@REPO_ID:ref:... (ID-pinned, rename/resurrection-proof).
+   * Look them up with:
+   * gh api repos/ORG/REPO --jq '{account: .owner.id, repo: .id}'
    */
-  readonly githubAccountId?: number;
-  readonly githubRepoId?: number;
+  readonly githubAccountId: number;
+  readonly githubRepoId: number;
   /**
    * Optional: ARN of existing GitHub OIDC provider to use
    * If not provided, imports the provider from the GitHubOIDCBootstrap stack export
@@ -70,23 +69,18 @@ export class HugoContentDeploymentRole extends Construct {
 
     this.provider = OpenIdConnectProvider.fromOpenIdConnectProviderArn(this, 'GitHubOIDCProvider', providerArn);
 
-    // Build the subject claims based on allowed branches.
-    // Each claim is emitted in the legacy repo:ORG/REPO form and, when the
-    // account/repo IDs are provided, also in GitHub's immutable
-    // repo:ORG@ACCOUNT_ID/REPO@REPO_ID form.
-    const repoIdentifiers = [`${props.githubOrg}/${props.githubRepo}`];
-    if (props.githubAccountId && props.githubRepoId) {
-      repoIdentifiers.push(`${props.githubOrg}@${props.githubAccountId}/${props.githubRepo}@${props.githubRepoId}`);
-    }
+    // Build the subject claims based on allowed branches, using GitHub's
+    // immutable repo:ORG@ACCOUNT_ID/REPO@REPO_ID form. The legacy
+    // repo:ORG/REPO form is deliberately not trusted: it is vulnerable to
+    // repo-name resurrection after a rename or delete.
+    const repoIdentifier = `${props.githubOrg}@${props.githubAccountId}/${props.githubRepo}@${props.githubRepoId}`;
     let subjectClaims: string[];
     if (props.allowedBranches && props.allowedBranches.length > 0) {
       // Restrict to specific branches
-      subjectClaims = props.allowedBranches.flatMap((branch) =>
-        repoIdentifiers.map((repo) => `repo:${repo}:ref:refs/heads/${branch}`),
-      );
+      subjectClaims = props.allowedBranches.map((branch) => `repo:${repoIdentifier}:ref:refs/heads/${branch}`);
     } else {
       // Allow all branches and tags
-      subjectClaims = repoIdentifiers.map((repo) => `repo:${repo}:*`);
+      subjectClaims = [`repo:${repoIdentifier}:*`];
     }
 
     // Create the IAM role that GitHub Actions will assume

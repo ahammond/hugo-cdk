@@ -124,7 +124,7 @@ exports[`HugoSiteStack Snapshot Tests snapshot matches default configuration 1`]
                 },
                 "StringLike": {
                   "token.actions.githubusercontent.com:sub": [
-                    "repo:testOrg/blog:ref:refs/heads/main",
+                    "repo:testOrg@12345/blog@67890:ref:refs/heads/main",
                   ],
                 },
               },
@@ -810,8 +810,8 @@ exports[`HugoSiteStack Snapshot Tests snapshot matches with custom githubRepo an
                 },
                 "StringLike": {
                   "token.actions.githubusercontent.com:sub": [
-                    "repo:testOrg/my-blog-repo:ref:refs/heads/main",
-                    "repo:testOrg/my-blog-repo:ref:refs/heads/staging",
+                    "repo:testOrg@12345/my-blog-repo@67890:ref:refs/heads/main",
+                    "repo:testOrg@12345/my-blog-repo@67890:ref:refs/heads/staging",
                   ],
                 },
               },

@@ -22,7 +22,7 @@ exports[`HugoContentDeploymentRole snapshot matches 1`] = `
                 },
                 "StringLike": {
                   "token.actions.githubusercontent.com:sub": [
-                    "repo:testOrg/testRepo:ref:refs/heads/main",
+                    "repo:testOrg@445764/testRepo@1318918137:ref:refs/heads/main",
                   ],
                 },
               },
