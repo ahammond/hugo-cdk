@@ -89,4 +89,13 @@ new HugoSiteStack(parentStack, 'DndMinis', {
   githubRepoId: 1318918137,
 });
 
+new HugoSiteStack(parentStack, 'SolveSolar', {
+  env: { account, region },
+  ...commonProps,
+  siteName: 'solve-solar',
+  allowedBranches: ['main'],
+  githubAccountId: 445764,
+  githubRepoId: 1409759197,
+});
+
 app.synth();
