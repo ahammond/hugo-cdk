@@ -98,4 +98,13 @@ new HugoSiteStack(parentStack, 'SolveSolar', {
   githubRepoId: 1409759197,
 });
 
+new HugoSiteStack(parentStack, 'SleepTruth', {
+  env: { account, region },
+  ...commonProps,
+  siteName: 'sleep-truth',
+  allowedBranches: ['main'],
+  githubAccountId: 445764,
+  githubRepoId: 1473329594,
+});
+
 app.synth();
